@@ -75,7 +75,7 @@ lib/
 ```
 
 ## Release Builds
-You can download the latest release APK for Taskify from the [GitHub Releases](https://github.com/taskify/releases).
+You can download the latest release APK for Taskify from the [GitHub Releases](https://github.com/xicko/taskify/releases).
 
 ## Contributing
 Contributions are welcome! Please create an issue or submit a pull request for any bug fixes or new features.
