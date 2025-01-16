@@ -1,0 +1,117 @@
+name: taskify
+description: "Organize tasks effortlessly and boost your productivity daily."
+publish_to: 'none'
+version: 1.0.0
+
+environment:
+  sdk: ^3.6.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  get: ^4.6.6
+  supabase_flutter: ^2.8.2
+  url_launcher: ^6.3.1
+  flutter_launcher_icons: ^0.14.2
+  infinite_scroll_pagination: ^4.1.0
+  flutter_dotenv: ^5.2.1
+  intl: ^0.20.1
+  font_awesome_flutter: ^10.8.0
+  path_provider: ^2.0.11
+  json_serializable: ^6.1.4
+  permission_handler: ^11.3.1
+  device_info_plus: ^11.2.0
+  connectivity_plus: ^6.1.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+  - assets/fonts/
+  - assets/logo1500.png
+  - assets/avatar.png
+  - assets/logo1500white.png
+  - assets/logo1500black.png
+
+  fonts:
+    - family: 'DM Sans'
+      fonts:
+        - asset: assets/fonts/DMSans-Thin.ttf
+          weight: 100
+        - asset: assets/fonts/DMSans-ThinItalic.ttf
+          weight: 100
+          style: italic
+
+        - asset: assets/fonts/DMSans-ExtraLight.ttf
+          weight: 200
+        - asset: assets/fonts/DMSans-ExtraLightItalic.ttf
+          weight: 200
+          style: italic
+
+        - asset: assets/fonts/DMSans-Light.ttf
+          weight: 300
+        - asset: assets/fonts/DMSans-LightItalic.ttf
+          weight: 300
+          style: italic
+        
+        - asset: assets/fonts/DMSans-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/DMSans-Italic.ttf
+          weight: 400
+          style: italic
+        
+        - asset: assets/fonts/DMSans-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/DMSans-MediumItalic.ttf
+          weight: 500
+          style: italic
+        
+        - asset: assets/fonts/DMSans-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/DMSans-SemiBoldItalic.ttf
+          weight: 600
+          style: italic
+
+        - asset: assets/fonts/DMSans-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/DMSans-BoldItalic.ttf
+          weight: 700
+          style: italic
+
+        - asset: assets/fonts/DMSans-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/DMSans-ExtraBoldItalic.ttf
+          weight: 800
+          style: italic
+
+        - asset: assets/fonts/DMSans-Black.ttf
+          weight: 900
+        - asset: assets/fonts/DMSans-BlackItalic.ttf
+          weight: 900
+          style: italic
+        
+flutter_launcher_icons:
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/icon/icon.png"
+  adaptive_icon_foreground: "assets/icon/icon.png"
+  adaptive_icon_background: "#ffffff"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  web:
+    generate: true
+    image_path: "assets/icon/icon.png"
+    background_color: "#ffffff"
+    theme_color: "#3f51b5"
+  windows:
+    generate: true
+    image_path: "assets/icon/icon.png"
+    icon_size: 48 # min:48, max:256, default: 48
+  macos:
+    generate: true
+    image_path: "assets/icon/icon.png"
