@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:taskify/auth/auth_service.dart';
 import 'package:taskify/controllers/base_controller.dart';
 import 'package:taskify/controllers/list_controller.dart';
@@ -21,6 +22,15 @@ class ListDetailsPage extends StatefulWidget {
 }
 
 class _ListDetailsPageState extends State<ListDetailsPage> {
+  // Share List method
+  void shareList() {
+    Share.share(
+      'https://taskify.xicko.co/?list=${widget.list['id']}',
+      subject: widget.list['title'],
+    );
+  }
+
+  // Main UI
   @override
   Widget build(BuildContext context) {
     return Obx(
@@ -63,11 +73,37 @@ class _ListDetailsPageState extends State<ListDetailsPage> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
+
+                      // Share button for public list
+                      if (AuthService().getCurrentUserId().toString() !=
+                          widget.list['user_id'])
+                        IconButton(
+                          onPressed: () => shareList(),
+                          icon: Icon(
+                            Icons.share,
+                            color:
+                                AppColors.bw100(Theme.of(context).brightness),
+                            size: 24,
+                          ),
+                        ),
+
+                      // Show list edit and delete buttons if user's id match
                       if (AuthService().getCurrentUserId().toString() ==
                           widget.list['user_id'])
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
+                            // Share button for user list
+                            IconButton(
+                              onPressed: () => shareList(),
+                              icon: Icon(
+                                Icons.share,
+                                color: AppColors.bw100(
+                                    Theme.of(context).brightness),
+                                size: 24,
+                              ),
+                            ),
+
                             // Update list button
                             IconButton(
                               onPressed: () {
