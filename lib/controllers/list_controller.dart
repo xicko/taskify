@@ -9,6 +9,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:taskify/auth/auth_service.dart';
 import 'package:taskify/controllers/auth_controller.dart';
 import 'package:taskify/controllers/base_controller.dart';
+import 'package:taskify/controllers/ui_controller.dart';
 import 'package:taskify/widgets/snackbar.dart';
 
 class ListController extends GetxController {
@@ -128,7 +129,10 @@ class ListController extends GetxController {
       }).select();
 
       isNewListModalVisible.value = false;
-      CustomSnackBar(context).show('List created!');
+
+      if (context.mounted) {
+        CustomSnackBar(context).show('List created!');
+      }
     } catch (e) {
       debugPrint('$e');
     }
@@ -155,7 +159,10 @@ class ListController extends GetxController {
           .select();
 
       isNewListModalVisible.value = false;
-      CustomSnackBar(context).show('List updated!');
+
+      if (context.mounted) {
+        CustomSnackBar(context).show('List updated!');
+      }
     } catch (e) {
       debugPrint('$e');
     }
@@ -324,7 +331,12 @@ class ListController extends GetxController {
 
       // If list is empty display message
       if (jsonData.toString().length < 4) {
-        CustomSnackBar(context).show('No lists to export', duration: 1500);
+        // CustomSnackBar(context).show('No lists to export', duration: 1500);
+        UIController.to.getSnackbar(
+          'No lists to export',
+          'Create a list to export',
+          shadows: false,
+        );
       }
 
       // Specifying directory
@@ -336,13 +348,23 @@ class ListController extends GetxController {
         final file = File(path);
         await file.writeAsString(jsonData);
 
-        CustomSnackBar(context)
-            .show('Lists exported to "$path"', duration: 7500);
+        // CustomSnackBar(context).show('Lists exported to "$path"', duration: 7500);
+        UIController.to.getSnackbar(
+          'Export successful',
+          'Lists exported to "$path"',
+          shadows: false,
+          duration: Duration(seconds: 8),
+        );
         debugPrint('Lists exported to "$path"');
       }
     } catch (e) {
       debugPrint('Error exporting user lists: $e');
-      CustomSnackBar(context).show('Unable to save lists', duration: 1500);
+      if (context.mounted) {
+        CustomSnackBar(context).show(
+          'Unable to save lists, please try again',
+          duration: 1500,
+        );
+      }
     }
   }
 
@@ -411,7 +433,10 @@ class ListController extends GetxController {
       // Open me screen login/signup if user isnt authenticated
       await Future.delayed(Duration(milliseconds: 300));
       BaseController.to.changePage(2);
-      CustomSnackBar(context).show('Not logged in');
+
+      if (context.mounted) {
+        CustomSnackBar(context).show('Not logged in');
+      }
     } else {
       // Clear the modal upon open if user was previously editing another list
       if (editListId?.value != null && editListId!.value!.isNotEmpty) {

@@ -33,12 +33,12 @@ class MePageState extends State<MePage> with AutomaticKeepAliveClientMixin {
     // checking if dark mode is on for theming some widgets
     final isDarkMode = // ignore: unused_local_variable
         MediaQuery.of(context).platformBrightness == Brightness.dark;
-    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+    final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
     super.build(context);
     return Scaffold(
       backgroundColor: Colors.white,
-      key: _scaffoldKey,
+      key: scaffoldKey,
       body: Stack(
         children: <Widget>[
           Container(

@@ -11,10 +11,10 @@ class NewListModal extends StatefulWidget {
   });
 
   @override
-  _NewListModalState createState() => _NewListModalState();
+  NewListModalState createState() => NewListModalState();
 }
 
-class _NewListModalState extends State<NewListModal> {
+class NewListModalState extends State<NewListModal> {
   // TextField Controllers
   final TextEditingController titleController =
       ListController.to.titleController;

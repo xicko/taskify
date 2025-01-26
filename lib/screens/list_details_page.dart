@@ -3,10 +3,12 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:taskify/auth/auth_service.dart';
+import 'package:taskify/controllers/auth_controller.dart';
 import 'package:taskify/controllers/base_controller.dart';
 import 'package:taskify/controllers/list_controller.dart';
 import 'package:taskify/controllers/ui_controller.dart';
 import 'package:taskify/theme/colors.dart';
+import 'package:taskify/widgets/discoverlist/report_list.dart';
 import 'package:taskify/widgets/snackbar.dart';
 
 class ListDetailsPage extends StatefulWidget {
@@ -74,17 +76,44 @@ class _ListDetailsPageState extends State<ListDetailsPage> {
                         ),
                       ),
 
-                      // Share button for public list
+                      // Report and Share button for public list
                       if (AuthService().getCurrentUserId().toString() !=
                           widget.list['user_id'])
-                        IconButton(
-                          onPressed: () => shareList(),
-                          icon: Icon(
-                            Icons.share,
-                            color:
-                                AppColors.bw100(Theme.of(context).brightness),
-                            size: 24,
-                          ),
+                        Row(
+                          children: [
+                            // Report
+                            IconButton(
+                              onPressed: () {
+                                if (AuthController.to.isLoggedIn.value) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (_) =>
+                                        ReportList(list: widget.list['id']),
+                                  );
+                                } else {
+                                  CustomSnackBar(context)
+                                      .show('Not logged in.');
+                                }
+                              },
+                              icon: Icon(
+                                Icons.report,
+                                color: AppColors.bw100(
+                                    Theme.of(context).brightness),
+                                size: 24,
+                              ),
+                            ),
+
+                            // Share
+                            IconButton(
+                              onPressed: () => shareList(),
+                              icon: Icon(
+                                Icons.share,
+                                color: AppColors.bw100(
+                                    Theme.of(context).brightness),
+                                size: 24,
+                              ),
+                            ),
+                          ],
                         ),
 
                       // Show list edit and delete buttons if user's id match
@@ -125,7 +154,6 @@ class _ListDetailsPageState extends State<ListDetailsPage> {
                                 } else {
                                   null;
                                 }
-                                ;
                               },
                               icon: Icon(
                                 Icons.edit_outlined,
@@ -190,11 +218,15 @@ class _ListDetailsPageState extends State<ListDetailsPage> {
                                                   context, widget.list['id']);
                                               await Future.delayed(
                                                   Duration(milliseconds: 100));
-                                              CustomSnackBar(context)
-                                                  .show('List deleted');
+                                              if (context.mounted) {
+                                                CustomSnackBar(context)
+                                                    .show('List deleted');
+                                              }
                                               await Future.delayed(
                                                   Duration(milliseconds: 500));
-                                              Navigator.pop(context);
+                                              if (context.mounted) {
+                                                Navigator.pop(context);
+                                              }
                                               ListController.to.pagingController
                                                   .refresh();
                                               ListController
@@ -223,7 +255,6 @@ class _ListDetailsPageState extends State<ListDetailsPage> {
                                 } else {
                                   null;
                                 }
-                                ;
                               },
                               icon: Icon(
                                 Icons.delete_outline_rounded,
@@ -276,7 +307,10 @@ class _ListDetailsPageState extends State<ListDetailsPage> {
                   ),
                 SizedBox(height: 10),
                 SelectableText(
-                  '${widget.list['created_at'] != null ? DateFormat.yMMMMd().format(DateTime.parse(widget.list['created_at']).toLocal()) : 'Unknown'}',
+                  widget.list['created_at'] != null
+                      ? DateFormat.yMMMMd().format(
+                          DateTime.parse(widget.list['created_at']).toLocal())
+                      : 'Unknown',
                   style: TextStyle(
                     fontSize: 14,
                     color: AppColors.bw100(Theme.of(context).brightness),

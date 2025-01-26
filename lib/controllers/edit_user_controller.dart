@@ -49,7 +49,9 @@ class EditUserController extends GetxController {
         emailUpdateSent.value = true;
       } catch (e) {
         debugPrint('Error updating mail $e');
-        CustomSnackBar(context).show('Error: $e');
+        if (context.mounted) {
+          CustomSnackBar(context).show('Error: $e');
+        }
         emailUpdateSent.value = false;
       }
     }
@@ -80,7 +82,9 @@ class EditUserController extends GetxController {
       passwordUpdatedText.value = true;
     } catch (e) {
       debugPrint('Error updating password $e');
-      CustomSnackBar(context).show('Error: $e');
+      if (context.mounted) {
+        CustomSnackBar(context).show('Error: $e');
+      }
       passwordUpdatedText.value = false;
     }
   }

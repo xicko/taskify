@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:taskify/controllers/list_controller.dart';
+import 'package:taskify/widgets/snackbar.dart';
 
 class SearchBarDiscoverList extends StatelessWidget {
   const SearchBarDiscoverList({super.key});
@@ -104,6 +105,7 @@ class SearchBarDiscoverList extends StatelessWidget {
                 // Button only active if input is not empty
                 if (ListController
                     .to.searchDiscoverController.text.isNotEmpty) {
+                  CustomSnackBar(context).show('Searching...');
                   ListController.to.searchDiscoverLists();
                 }
 

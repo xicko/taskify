@@ -54,7 +54,6 @@ class AboutTaskify extends StatelessWidget {
                       // Open link
                       BaseController.to
                           .openLink('https://github.com/xicko/taskify');
-                      ;
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.grey[300],

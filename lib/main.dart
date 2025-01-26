@@ -9,6 +9,7 @@ import 'package:taskify/controllers/auth_controller.dart';
 import 'package:taskify/controllers/base_controller.dart';
 import 'package:taskify/controllers/edit_user_controller.dart';
 import 'package:taskify/controllers/list_controller.dart';
+import 'package:taskify/controllers/report_controller.dart';
 import 'package:taskify/controllers/ui_controller.dart';
 import 'package:taskify/theme/theme.dart';
 import 'base_screen.dart';
@@ -34,6 +35,7 @@ void main() {
       Get.put<UIController>(UIController());
       Get.put<ListController>(ListController());
       Get.put<EditUserController>(EditUserController());
+      Get.put<ReportController>(ReportController());
 
       // Screen orientation locked to portrait/vertical
       SystemChrome.setPreferredOrientations([
@@ -59,7 +61,7 @@ class MainApp extends StatelessWidget {
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.light,
     ));
-    return MaterialApp(
+    return GetMaterialApp(
       home: AuthGate(
         child: const BaseScreen(),
       ),

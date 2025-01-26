@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:taskify/controllers/auth_controller.dart';
 import 'package:taskify/controllers/base_controller.dart';
 import 'package:taskify/controllers/list_controller.dart';
 import 'package:taskify/controllers/ui_controller.dart';
 import 'package:taskify/screens/list_details_page.dart';
+import 'package:taskify/widgets/discoverlist/report_list.dart';
 // import 'package:taskify/widgets/discoverlist/discover_list_skeleton_loader.dart';
 import 'package:taskify/widgets/discoverlist/searchbar_discoverlist.dart';
+import 'package:taskify/widgets/snackbar.dart';
 
 class DiscoverLists extends StatelessWidget {
   const DiscoverLists({super.key});
@@ -15,6 +20,11 @@ class DiscoverLists extends StatelessWidget {
   Future<void> _pullToRefresh() async {
     ListController.to.publicPagingController.refresh();
     ListController.to.searchDiscoverController.clear();
+  }
+
+  // Share list url
+  void _shareList(Map<String, dynamic> item) {
+    Share.share('https://taskify.xicko.co/?list=${item['id']}');
   }
 
   @override
@@ -67,7 +77,7 @@ class DiscoverLists extends StatelessWidget {
                           animateTransitions: true,
                           transitionDuration: Duration(milliseconds: 150),
                           itemBuilder: (context, item, index) {
-                            bool isFirst = index == 0;
+                            // bool isFirst = index == 0;
                             bool isLast = index ==
                                 ListController.to.publicPagingController
                                         .itemList!.length -
@@ -115,143 +125,220 @@ class DiscoverLists extends StatelessWidget {
                                     ),
                                   );
                                 },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.only(
-                                      topLeft: isFirst
-                                          ? Radius.circular(0)
-                                          : Radius.zero,
-                                      topRight: isFirst
-                                          ? Radius.circular(0)
-                                          : Radius.zero,
-                                      bottomLeft: isLast
-                                          ? Radius.circular(16)
-                                          : Radius.zero,
-                                      bottomRight: isLast
-                                          ? Radius.circular(16)
-                                          : Radius.zero,
-                                    ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.only(
+                                    bottomLeft: isLast
+                                        ? Radius.circular(16)
+                                        : Radius.zero,
+                                    bottomRight: isLast
+                                        ? Radius.circular(16)
+                                        : Radius.zero,
                                   ),
-                                  // Outer padding
-                                  padding: EdgeInsets.symmetric(
-                                      vertical: 2, horizontal: 4),
-                                  child: Padding(
-                                    // Inner padding
-                                    padding: const EdgeInsets.symmetric(
-                                      vertical: 10,
-                                      horizontal: 14,
-                                    ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                  child: Slidable(
+                                    endActionPane: ActionPane(
+                                      motion: ScrollMotion(),
                                       children: [
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            // Left side: Title and content
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  // Title
-                                                  Text(
-                                                    item['title'] ?? 'Error',
-                                                    maxLines: 2,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                    style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                      fontSize: 16,
-                                                      color: Colors.black,
-                                                    ),
-                                                  ),
-
-                                                  SizedBox(height: 6),
-
-                                                  // User email and icon
-                                                  Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    children: [
-                                                      Icon(
-                                                        Icons
-                                                            .person_outline_rounded,
-                                                        size: 18,
-                                                        color: Colors
-                                                            .blueGrey[600],
-                                                      ),
-                                                      SizedBox(width: 4),
-                                                      ConstrainedBox(
-                                                        // Capping width for user email and showing ellipsis for overflow
-                                                        constraints:
-                                                            BoxConstraints(
-                                                                maxWidth: 110),
-                                                        child: Text(
-                                                          '${item['email']?.split('@').first ?? 'No user'}',
-                                                          maxLines: 1,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          style: TextStyle(
-                                                            fontSize: 12,
-                                                            color: Colors
-                                                                .blueGrey[800],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
+                                        CustomSlidableAction(
+                                          padding: EdgeInsets.only(
+                                            top: 4,
+                                            bottom: 4,
+                                          ),
+                                          onPressed: (_) => _shareList(item),
+                                          backgroundColor: const Color.fromARGB(
+                                              255, 210, 210, 210),
+                                          foregroundColor: Colors.black,
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            spacing: 1,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(
+                                                Icons.share,
+                                                size: 22,
                                               ),
-                                            ),
-
-                                            SizedBox(width: 15),
-
-                                            // Right side: Created date and user info
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
-                                              children: [
-                                                // Date
-                                                Text(
-                                                  item['created_at'] != null
-                                                      ? DateFormat.yMd().format(
-                                                          DateTime.parse(item[
-                                                                  'created_at'])
-                                                              .toLocal())
-                                                      : 'Error',
-                                                  maxLines: 2,
-                                                  style: TextStyle(
-                                                    fontSize: 12,
-                                                    color: Colors.grey[900],
-                                                  ),
+                                              Text(
+                                                'Share',
+                                                style: TextStyle(
+                                                  fontSize: 14,
                                                 ),
-
-                                                SizedBox(height: 8),
-                                              ],
-                                            ),
-                                          ],
+                                              ),
+                                            ],
+                                          ),
                                         ),
-
-                                        SizedBox(height: 6),
-
-                                        // List Content Text
-                                        Text(
-                                          item['content'] ?? 'Error',
-                                          maxLines: 3,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.grey[800],
+                                        CustomSlidableAction(
+                                          padding: EdgeInsets.only(
+                                            top: 4,
+                                            bottom: 4,
+                                          ),
+                                          onPressed: (_) => {
+                                            if (AuthController
+                                                .to.isLoggedIn.value)
+                                              {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (_) => ReportList(
+                                                      list: item['id']),
+                                                ),
+                                              }
+                                            else
+                                              {
+                                                CustomSnackBar(context)
+                                                    .show('Not logged in.')
+                                              }
+                                          },
+                                          backgroundColor: const Color.fromARGB(
+                                              255, 247, 98, 88),
+                                          foregroundColor: Colors.black,
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.report,
+                                                size: 24,
+                                              ),
+                                              Text(
+                                                'Report',
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ],
+                                    ),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                      ),
+                                      // Outer padding
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: 2, horizontal: 4),
+                                      child: Padding(
+                                        // Inner padding
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 10,
+                                          horizontal: 14,
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                // Left side: Title and content
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      // Title
+                                                      Text(
+                                                        item['title'] ??
+                                                            'Error',
+                                                        maxLines: 2,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          fontSize: 16,
+                                                          color: Colors.black,
+                                                        ),
+                                                      ),
+
+                                                      SizedBox(height: 6),
+
+                                                      // User email and icon
+                                                      Row(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          Icon(
+                                                            Icons
+                                                                .person_outline_rounded,
+                                                            size: 18,
+                                                            color: Colors
+                                                                .blueGrey[600],
+                                                          ),
+                                                          SizedBox(width: 4),
+                                                          ConstrainedBox(
+                                                            // Capping width for user email and showing ellipsis for overflow
+                                                            constraints:
+                                                                BoxConstraints(
+                                                                    maxWidth:
+                                                                        110),
+                                                            child: Text(
+                                                              '${item['email']?.split('@').first ?? 'No user'}',
+                                                              maxLines: 1,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              style: TextStyle(
+                                                                fontSize: 12,
+                                                                color: Colors
+                                                                        .blueGrey[
+                                                                    800],
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+
+                                                SizedBox(width: 15),
+
+                                                // Right side: Created date and user info
+                                                Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.end,
+                                                  children: [
+                                                    // Date
+                                                    Text(
+                                                      item['created_at'] != null
+                                                          ? DateFormat.yMd().format(
+                                                              DateTime.parse(item[
+                                                                      'created_at'])
+                                                                  .toLocal())
+                                                          : 'Error',
+                                                      maxLines: 2,
+                                                      style: TextStyle(
+                                                        fontSize: 12,
+                                                        color: Colors.grey[900],
+                                                      ),
+                                                    ),
+
+                                                    SizedBox(height: 8),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+
+                                            SizedBox(height: 6),
+
+                                            // List Content Text
+                                            Text(
+                                              item['content'] ?? 'Error',
+                                              maxLines: 3,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.grey[800],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),

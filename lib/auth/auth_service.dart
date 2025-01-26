@@ -22,13 +22,17 @@ class AuthService {
     } on AuthException catch (e) {
       // Handle specific AuthException errors
       debugPrint('AuthException: $e');
-      CustomSnackBar(context).show('Login error occurred. Please try again.');
+      if (context.mounted) {
+        CustomSnackBar(context).show('Login error occurred. Please try again.');
+      }
       rethrow;
     } catch (e) {
       // Handle any other general exceptions
       debugPrint('Error: $e');
-      CustomSnackBar(context)
-          .show('An unexpected error occurred. Please try again.');
+      if (context.mounted) {
+        CustomSnackBar(context)
+            .show('An unexpected error occurred. Please try again.');
+      }
       rethrow;
     }
   }
@@ -45,12 +49,17 @@ class AuthService {
     } on AuthException catch (e) {
       // Handle AuthException errors specifically
       debugPrint('AuthException: $e');
-      CustomSnackBar(context).show('Sign-up error occurred. Please try again.');
+      if (context.mounted) {
+        CustomSnackBar(context)
+            .show('Sign-up error occurred. Please try again.');
+      }
     } catch (e) {
       // Handle other types of exceptions
       debugPrint('Error: $e');
-      CustomSnackBar(context)
-          .show('An unexpected error occurred. Please try again.');
+      if (context.mounted) {
+        CustomSnackBar(context)
+            .show('An unexpected error occurred. Please try again.');
+      }
     }
     return null;
   }

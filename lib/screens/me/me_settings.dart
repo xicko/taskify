@@ -3,6 +3,7 @@ import 'package:taskify/auth/auth_service.dart';
 import 'package:taskify/controllers/auth_controller.dart';
 import 'package:taskify/controllers/edit_user_controller.dart';
 import 'package:taskify/controllers/list_controller.dart';
+import 'package:taskify/controllers/ui_controller.dart';
 import 'package:taskify/widgets/abouttaskify.dart';
 import 'package:taskify/screens/me/edit_user.dart';
 import 'package:taskify/theme/colors.dart';
@@ -12,10 +13,10 @@ class MeSettings extends StatefulWidget {
   const MeSettings({super.key});
 
   @override
-  _MeSettingsState createState() => _MeSettingsState();
+  MeSettingsState createState() => MeSettingsState();
 }
 
-class _MeSettingsState extends State<MeSettings> {
+class MeSettingsState extends State<MeSettings> {
   @override
   Widget build(BuildContext context) {
     // getting user's device screen height/width
@@ -109,8 +110,12 @@ class _MeSettingsState extends State<MeSettings> {
                   await ListController.to.exportUserLists(context, 0);
                 } else {
                   // Handle the case where no user is logged in
-                  CustomSnackBar(context).show(
-                      'No user is logged in. Please log in to export lists.');
+                  // CustomSnackBar(context).show('No user is logged in. Please log in to export lists.');
+                  UIController.to.getSnackbar(
+                    'No user is logged in.',
+                    'Please log in to export lists.',
+                    shadows: false,
+                  );
                 }
               },
               style: TextButton.styleFrom(
@@ -179,7 +184,10 @@ class _MeSettingsState extends State<MeSettings> {
                             await Future.delayed(Duration(milliseconds: 400));
                             ListController.to.pagingController.refresh();
                             ListController.to.publicPagingController.refresh();
-                            CustomSnackBar(context).show('Deleted all lists');
+
+                            if (context.mounted) {
+                              CustomSnackBar(context).show('Deleted all lists');
+                            }
                           },
                           child: Padding(
                             padding: EdgeInsets.all(0),
@@ -257,7 +265,9 @@ class _MeSettingsState extends State<MeSettings> {
 
                 // Delayed Log out
                 await Future.delayed(Duration(milliseconds: 1000));
-                AuthController.to.signOut(context);
+                if (context.mounted) {
+                  AuthController.to.signOut(context);
+                }
 
                 // Refresh users list after slight delay
                 await Future.delayed(Duration(milliseconds: 100));
@@ -276,7 +286,9 @@ class _MeSettingsState extends State<MeSettings> {
                 alignment: Alignment.centerLeft,
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Text('Log out'),
+                  child: Text(
+                    'Log out',
+                  ),
                 ),
               ),
             ),

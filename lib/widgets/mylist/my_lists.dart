@@ -111,7 +111,9 @@ class MyLists extends StatelessWidget {
                   await Future.delayed(Duration(milliseconds: 100));
 
                   // Showing deleted message
-                  CustomSnackBar(context).show('List deleted');
+                  if (context.mounted) {
+                    CustomSnackBar(context).show('List deleted');
+                  }
                   await Future.delayed(Duration(milliseconds: 500));
 
                   // Removing from the list UI
@@ -217,7 +219,7 @@ class MyLists extends StatelessWidget {
                                     endActionPane: ActionPane(
                                       motion: ScrollMotion(),
                                       children: [
-                                        SlidableAction(
+                                        CustomSlidableAction(
                                           padding: EdgeInsets.only(
                                             top: 4,
                                             bottom: 4,
@@ -226,10 +228,25 @@ class MyLists extends StatelessWidget {
                                           backgroundColor: const Color.fromARGB(
                                               255, 210, 210, 210),
                                           foregroundColor: Colors.black,
-                                          icon: Icons.share,
-                                          label: 'Share',
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            spacing: 1,
+                                            children: [
+                                              Icon(
+                                                Icons.share,
+                                                size: 22,
+                                              ),
+                                              Text(
+                                                'Share',
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                        SlidableAction(
+                                        CustomSlidableAction(
                                           padding: EdgeInsets.only(
                                             top: 4,
                                             bottom: 4,
@@ -239,8 +256,22 @@ class MyLists extends StatelessWidget {
                                           backgroundColor: const Color.fromARGB(
                                               255, 247, 98, 88),
                                           foregroundColor: Colors.black,
-                                          icon: Icons.delete_forever,
-                                          label: 'Delete',
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.delete_forever,
+                                                size: 24,
+                                              ),
+                                              Text(
+                                                'Delete',
+                                                style: TextStyle(
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -505,7 +536,7 @@ class MyLists extends StatelessWidget {
                                   SizedBox(height: 10),
                                   Text(
                                     'No more lists',
-                                    style: TextStyle(fontSize: 16),
+                                    style: TextStyle(fontSize: 0),
                                   ),
                                 ],
                               ),

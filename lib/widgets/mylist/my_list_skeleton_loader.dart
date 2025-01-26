@@ -109,7 +109,7 @@ class SkeletonList extends StatelessWidget {
   final double width;
   final double height;
 
-  SkeletonList({required this.width, required this.height});
+  const SkeletonList({super.key, required this.width, required this.height});
 
   @override
   Widget build(BuildContext context) {

@@ -11,10 +11,10 @@ class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  LoginPageState createState() => LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class LoginPageState extends State<LoginPage> {
   // Text Controllers for login inputs
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -33,7 +33,10 @@ class _LoginPageState extends State<LoginPage> {
           .signInWithEmailPassword(context, email, password)
           .then((response) async {
         if (response.session != null) {
-          CustomSnackBar(context).show("Login successful!");
+          if (mounted) {
+            CustomSnackBar(context).show("Login successful!");
+          }
+
           // hiding login modal if login successful(state)
           UIController.to.loginVisibility.value = false;
 
@@ -41,11 +44,18 @@ class _LoginPageState extends State<LoginPage> {
           ListController.to.pagingController.refresh();
           ListController.to.publicPagingController.refresh();
         } else {
-          CustomSnackBar(context).show("Login failed. Check credentials.");
+          if (mounted) {
+            CustomSnackBar(context).show("Login failed. Check credentials.");
+          }
         }
       }).catchError(
         (e) {
-          CustomSnackBar(context).show("Error: $e");
+          // CustomSnackBar(context).show("Error: $e");
+          UIController.to.getSnackbar(
+            'Error: $e',
+            '',
+            shadows: false,
+          );
         },
       );
     } else {
@@ -247,8 +257,10 @@ class _LoginPageState extends State<LoginPage> {
                                 minimumSize: Size(0, 0),
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                 shape: RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(8))),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(8),
+                                  ),
+                                ),
                                 elevation: 20,
                                 shadowColor: AppColors.authButtonShadow(
                                     Theme.of(context).brightness),

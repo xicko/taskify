@@ -11,10 +11,10 @@ class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
 
   @override
-  _SignupPageState createState() => _SignupPageState();
+  SignupPageState createState() => SignupPageState();
 }
 
-class _SignupPageState extends State<SignupPage> {
+class SignupPageState extends State<SignupPage> {
   // Text Controllers for signup inputs
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -41,16 +41,25 @@ class _SignupPageState extends State<SignupPage> {
       AuthService().signUpWithEmailPassword(context, email, password).then(
         (response) {
           if (response?.session != null) {
-            CustomSnackBar(context).show("Sign up successful!");
+            if (mounted) {
+              CustomSnackBar(context).show("Sign up successful!");
+            }
+
             // hiding signup modal if signup successful(state)
             UIController.to.signupVisibility.value = false;
           } else {
-            CustomSnackBar(context).show("Sign up failed. Check credentials.");
+            if (mounted) {
+              CustomSnackBar(context).show(
+                "Sign up failed. Check credentials.",
+              );
+            }
           }
         },
       ).catchError(
         (e) {
-          CustomSnackBar(context).show("Error: $e");
+          if (mounted) {
+            CustomSnackBar(context).show("Error: $e");
+          }
         },
       );
     } else {

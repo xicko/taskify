@@ -31,6 +31,8 @@ class AuthController extends GetxController {
   Future<void> signOut(BuildContext context) async {
     await _supabaseClient.auth.signOut();
     isLoggedIn.value = false;
-    CustomSnackBar(context).show('Signed out');
+    if (context.mounted) {
+      CustomSnackBar(context).show('Signed out');
+    }
   }
 }

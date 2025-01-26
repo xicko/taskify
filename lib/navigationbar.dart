@@ -9,8 +9,6 @@ class BottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(
       () => NavigationBar(
-        // height: 120,
-        // animationDuration: Duration(seconds: 2),
         overlayColor: WidgetStateProperty.all(Colors.transparent),
         selectedIndex: BaseController.to.currentNavIndex.value,
         onDestinationSelected: (index) => BaseController.to.changePage(index),
@@ -25,7 +23,6 @@ class BottomNavBar extends StatelessWidget {
             ),
             label: 'Discover',
           ),
-          //Text(AuthService().getCurrentUserId().toString()),
 
           // index 1
           NavigationDestination(
