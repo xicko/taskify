@@ -82,8 +82,9 @@ class NewListModalState extends State<NewListModal> {
     // Closing NewListModal
     ListController.to.isNewListModalVisible.value = false;
 
-    // Unfocusing elements, mostly for text fields
-    FocusManager.instance.primaryFocus?.unfocus();
+    // Unfocusing text fields
+    _titleFocusNode.unfocus();
+    _contentFocusNode.unfocus();
 
     // Clearing isPublic toggle on cancel if EditMode was true
     // Basically clearing the toggle for the next time the modal is opened
@@ -95,19 +96,20 @@ class NewListModalState extends State<NewListModal> {
   @override
   void initState() {
     super.initState();
+
     contentController.addListener(() {
       characterCount.value = contentController.text.length;
     });
 
     if (ListController.to.editListId?.value != null) {
-      // checks if editListId is not null. If true, it populates the fields
-      // basically populating fields if editing
+      // Checks if editListId is not null. If true, it populates the fields
+      // Basically populating fields if editing
       titleController.text = ListController.to.editTitle?.value ?? '';
       contentController.text = ListController.to.editContent?.value ?? '';
       ListController.to.isPublic.value =
           ListController.to.editIsPublic?.value ?? false;
     } else {
-      // clear
+      // Clear
       titleController.clear();
       contentController.clear();
       ListController.to.isPublic.value = false;
@@ -128,12 +130,12 @@ class NewListModalState extends State<NewListModal> {
 
   @override
   Widget build(BuildContext context) {
-    // getting user's device screen height/width
+    // Getting user's device screen height/width
     double screenHeight = MediaQuery.of(context).size.height;
     double screenwidth // ignore: unused_local_variable
         = MediaQuery.of(context).size.width;
 
-    // checking if dark mode is on for theming some widgets
+    // Checking if dark mode is on for theming some widgets
     final isDarkMode = // ignore: unused_local_variable
         MediaQuery.of(context).platformBrightness == Brightness.dark;
 
@@ -174,9 +176,9 @@ class NewListModalState extends State<NewListModal> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      SizedBox(height: availableHeight * 0.06), // top space
+                      SizedBox(height: availableHeight * 0.06), // Top space
 
-                      // text title
+                      // Title
                       Text(
                         ListController.to.isEditMode.value
                             ? 'Edit List'
@@ -258,7 +260,7 @@ class NewListModalState extends State<NewListModal> {
                                     maxLength: 5000,
                                     maxLines: null,
                                     cursorColor: Colors.black,
-                                    textInputAction: TextInputAction.done,
+                                    textInputAction: TextInputAction.newline,
                                     style: TextStyle(
                                       fontSize: 14,
                                       color: Colors.black,
@@ -463,9 +465,10 @@ class NewListModalState extends State<NewListModal> {
                             ? 'Save List'
                             : 'Create List',
                         style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.black87,
-                            fontWeight: FontWeight.w500),
+                          fontSize: 16,
+                          color: Colors.black87,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                       Icon(
                         ListController.to.isEditMode.value

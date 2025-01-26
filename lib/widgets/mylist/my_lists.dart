@@ -117,7 +117,15 @@ class MyLists extends StatelessWidget {
                   await Future.delayed(Duration(milliseconds: 500));
 
                   // Removing from the list UI
-                  ListController.to.pagingController.itemList?.removeAt(index);
+                  final items = ListController.to.pagingController.itemList;
+                  if (items != null && index >= 0 && index < items.length) {
+                    // Remove only if 3 safety checks above are met
+                    items.removeAt(index);
+
+                    // Notify the PagingController about the change
+                    ListController.to.pagingController.itemList =
+                        List.of(items);
+                  }
 
                   // ??
                   FocusManager.instance.primaryFocus?.unfocus();
@@ -153,8 +161,7 @@ class MyLists extends StatelessWidget {
   Widget build(BuildContext context) {
     // getting user's device screen height/width
     double screenHeight = MediaQuery.of(context).size.height;
-    double screenwidth // ignore: unused_local_variable
-        = MediaQuery.of(context).size.width;
+    double screenwidth = MediaQuery.of(context).size.width;
 
     return Obx(
       () => AnimatedOpacity(
@@ -170,382 +177,360 @@ class MyLists extends StatelessWidget {
           // Wrapped in obx for the skeleton loader
           child: Obx(
             // Skeleton Loader is overlaid over the real list
-            () => Stack(
-              children: [
-                // List UI
+            () => // List UI
                 Column(
-                  children: [
-                    // Search
-                    SearchBarMyList(),
+              children: [
+                // Search
+                SearchBarMyList(),
 
-                    // Mapped lists
-                    SizedBox(
-                      height: screenHeight * 0.595,
-                      child: RefreshIndicator(
-                        backgroundColor: Color.fromARGB(210, 66, 66, 66),
-                        color: Colors.white,
-                        onRefresh: _pullToRefresh,
-                        child: PagedListView(
-                          physics: AlwaysScrollableScrollPhysics(),
-                          scrollController:
-                              ListController.to.listMyScrollController,
-                          pagingController: ListController.to.pagingController,
-                          padding: EdgeInsets.only(
-                            bottom: AuthController.to.isLoggedIn.value ? 40 : 0,
-                            top: 1,
-                          ),
-                          builderDelegate:
-                              PagedChildBuilderDelegate<Map<String, dynamic>>(
-                            animateTransitions: true,
-                            transitionDuration: Duration(milliseconds: 150),
-                            itemBuilder: (context, item, index) {
-                              // bool isFirst = index == 0;
-                              bool isLast = index ==
-                                  ListController.to.pagingController.itemList!
-                                          .length -
-                                      1;
-                              return Padding(
-                                padding: EdgeInsets.symmetric(vertical: 1),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.only(
-                                    bottomLeft: isLast
-                                        ? Radius.circular(16)
-                                        : Radius.zero,
-                                    bottomRight: isLast
-                                        ? Radius.circular(16)
-                                        : Radius.zero,
-                                  ),
-                                  child: Slidable(
-                                    endActionPane: ActionPane(
-                                      motion: ScrollMotion(),
-                                      children: [
-                                        CustomSlidableAction(
-                                          padding: EdgeInsets.only(
-                                            top: 4,
-                                            bottom: 4,
+                // Mapped lists
+                SizedBox(
+                  height: screenHeight * 0.595,
+                  child: RefreshIndicator(
+                    backgroundColor: Color.fromARGB(210, 66, 66, 66),
+                    color: Colors.white,
+                    onRefresh: _pullToRefresh,
+                    child: PagedListView(
+                      physics: AlwaysScrollableScrollPhysics(),
+                      scrollController:
+                          ListController.to.listMyScrollController,
+                      pagingController: ListController.to.pagingController,
+                      padding: EdgeInsets.only(
+                        bottom: AuthController.to.isLoggedIn.value ? 40 : 0,
+                        top: 1,
+                      ),
+                      builderDelegate:
+                          PagedChildBuilderDelegate<Map<String, dynamic>>(
+                        animateTransitions: true,
+                        transitionDuration: Duration(milliseconds: 150),
+                        itemBuilder: (context, item, index) {
+                          // bool isFirst = index == 0;
+                          bool isLast = index ==
+                              ListController
+                                      .to.pagingController.itemList!.length -
+                                  1;
+                          return Padding(
+                            padding: EdgeInsets.symmetric(vertical: 1),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.only(
+                                bottomLeft:
+                                    isLast ? Radius.circular(16) : Radius.zero,
+                                bottomRight:
+                                    isLast ? Radius.circular(16) : Radius.zero,
+                              ),
+                              child: Slidable(
+                                endActionPane: ActionPane(
+                                  motion: ScrollMotion(),
+                                  children: [
+                                    CustomSlidableAction(
+                                      padding: EdgeInsets.only(
+                                        top: 4,
+                                        bottom: 4,
+                                      ),
+                                      onPressed: (_) => _shareList(item),
+                                      backgroundColor: const Color.fromARGB(
+                                          255, 210, 210, 210),
+                                      foregroundColor: Colors.black,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        spacing: 1,
+                                        children: [
+                                          Icon(
+                                            Icons.share,
+                                            size: 22,
                                           ),
-                                          onPressed: (_) => _shareList(item),
-                                          backgroundColor: const Color.fromARGB(
-                                              255, 210, 210, 210),
-                                          foregroundColor: Colors.black,
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            spacing: 1,
-                                            children: [
-                                              Icon(
-                                                Icons.share,
-                                                size: 22,
-                                              ),
-                                              Text(
-                                                'Share',
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                ),
-                                              ),
-                                            ],
+                                          Text(
+                                            'Share',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                            ),
                                           ),
-                                        ),
-                                        CustomSlidableAction(
-                                          padding: EdgeInsets.only(
-                                            top: 4,
-                                            bottom: 4,
-                                          ),
-                                          onPressed: (_) =>
-                                              _listDelete(context, item, index),
-                                          backgroundColor: const Color.fromARGB(
-                                              255, 247, 98, 88),
-                                          foregroundColor: Colors.black,
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Icon(
-                                                Icons.delete_forever,
-                                                size: 24,
-                                              ),
-                                              Text(
-                                                'Delete',
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-                                    child: GestureDetector(
-                                      // Tap to open list details
-                                      onTap: () => _listOnTap(context, item),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                        ),
-                                        // Outer padding
-                                        padding: EdgeInsets.symmetric(
-                                          vertical: 2,
-                                          horizontal: 4,
-                                        ),
-                                        child: Padding(
-                                          // Inner Padding
-                                          padding: const EdgeInsets.symmetric(
-                                            vertical: 10,
-                                            horizontal: 14,
+                                    CustomSlidableAction(
+                                      padding: EdgeInsets.only(
+                                        top: 4,
+                                        bottom: 4,
+                                      ),
+                                      onPressed: (_) =>
+                                          _listDelete(context, item, index),
+                                      backgroundColor: const Color.fromARGB(
+                                          255, 247, 98, 88),
+                                      foregroundColor: Colors.black,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.delete_forever,
+                                            size: 24,
                                           ),
-                                          child: Row(
+                                          Text(
+                                            'Delete',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                child: GestureDetector(
+                                  // Tap to open list details
+                                  onTap: () => _listOnTap(context, item),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                    ),
+                                    // Outer padding
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: 2,
+                                      horizontal: 4,
+                                    ),
+                                    child: Padding(
+                                      // Inner Padding
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 10,
+                                        horizontal: 14,
+                                      ),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          // Left side: Title and content
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                // Title
+                                                Text(
+                                                  item['title'] ?? 'Error',
+                                                  maxLines: 2,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w600,
+                                                    fontSize: 16,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                SizedBox(height: 6),
+                                                // Content
+                                                Text(
+                                                  item['content'] ?? 'Error',
+                                                  maxLines: 3,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.grey[900],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(width: 16),
+                                          // Right side: Created date and privacy status
+                                          Column(
                                             crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                                CrossAxisAlignment.end,
                                             children: [
-                                              // Left side: Title and content
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    // Title
-                                                    Text(
-                                                      item['title'] ?? 'Error',
-                                                      maxLines: 2,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        fontSize: 16,
-                                                        color: Colors.black,
-                                                      ),
-                                                    ),
-                                                    SizedBox(height: 6),
-                                                    // Content
-                                                    Text(
-                                                      item['content'] ??
-                                                          'Error',
-                                                      maxLines: 3,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: TextStyle(
-                                                        fontSize: 14,
-                                                        color: Colors.grey[900],
-                                                      ),
-                                                    ),
-                                                  ],
+                                              // Date
+                                              Text(
+                                                item['created_at'] != null
+                                                    ? DateFormat.yMd().format(
+                                                        DateTime.parse(item[
+                                                                'created_at'])
+                                                            .toLocal())
+                                                    : 'Error',
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.grey[900],
                                                 ),
                                               ),
-                                              SizedBox(width: 16),
-                                              // Right side: Created date and privacy status
-                                              Column(
+                                              SizedBox(height: 8),
+                                              // Privacy status
+                                              Row(
                                                 crossAxisAlignment:
-                                                    CrossAxisAlignment.end,
+                                                    CrossAxisAlignment.center,
+                                                mainAxisSize: MainAxisSize.min,
                                                 children: [
-                                                  // Date
                                                   Text(
-                                                    item['created_at'] != null
-                                                        ? DateFormat.yMd().format(
-                                                            DateTime.parse(item[
-                                                                    'created_at'])
-                                                                .toLocal())
-                                                        : 'Error',
+                                                    item['is_public']
+                                                        ? 'Public'
+                                                        : 'Private',
                                                     style: TextStyle(
                                                       fontSize: 12,
-                                                      color: Colors.grey[900],
+                                                      color:
+                                                          Colors.blueGrey[700],
                                                     ),
                                                   ),
-                                                  SizedBox(height: 8),
-                                                  // Privacy status
-                                                  Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    mainAxisSize:
-                                                        MainAxisSize.min,
-                                                    children: [
-                                                      Text(
-                                                        item['is_public']
-                                                            ? 'Public'
-                                                            : 'Private',
-                                                        style: TextStyle(
-                                                          fontSize: 12,
-                                                          color: Colors
-                                                              .blueGrey[700],
-                                                        ),
-                                                      ),
-                                                      SizedBox(width: 4),
-                                                      Icon(
-                                                        item['is_public']
-                                                            ? Icons
-                                                                .public_rounded
-                                                            : Icons
-                                                                .lock_rounded,
-                                                        size: 16,
-                                                        color: Colors
-                                                            .blueGrey[700],
-                                                      ),
-                                                    ],
+                                                  SizedBox(width: 4),
+                                                  Icon(
+                                                    item['is_public']
+                                                        ? Icons.public_rounded
+                                                        : Icons.lock_rounded,
+                                                    size: 16,
+                                                    color: Colors.blueGrey[700],
                                                   ),
                                                 ],
                                               ),
                                             ],
                                           ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              );
-                            },
-                            noItemsFoundIndicatorBuilder: (context) => Center(
-                                child: Padding(
-                              padding: EdgeInsets.only(top: 1),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: const Color.fromARGB(39, 0, 0, 0),
-                                      blurRadius: 8,
-                                      offset: Offset(0, 6),
-                                    ),
-                                  ],
-                                  borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(16),
-                                    bottomRight: Radius.circular(16),
-                                  ),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  spacing: 0,
-                                  children: [
-                                    Column(
-                                      spacing: 16,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          'No lists found,\nyou can create one!',
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 20,
-                                          ),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                            )),
-
-                            // if not authenticated
-                            firstPageErrorIndicatorBuilder: (context) => Center(
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 1),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color:
-                                            const Color.fromARGB(39, 0, 0, 0),
-                                        blurRadius: 8,
-                                        offset: Offset(0, 6),
-                                      ),
-                                    ],
-                                    borderRadius: BorderRadius.only(
-                                      bottomLeft: Radius.circular(16),
-                                      bottomRight: Radius.circular(16),
-                                    ),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    spacing: 0,
-                                    children: [
-                                      Column(
-                                        spacing: 16,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            'Please log in to\ncreate a new list',
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 20,
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                          ElevatedButton(
-                                            style: ButtonStyle(
-                                              elevation:
-                                                  WidgetStateProperty.all(0),
-                                              shape: WidgetStateProperty.all(
-                                                RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                    Radius.circular(6),
-                                                  ),
-                                                ),
-                                              ),
-                                              shadowColor:
-                                                  WidgetStateProperty.all(
-                                                      Colors.black),
-                                              tapTargetSize:
-                                                  MaterialTapTargetSize
-                                                      .shrinkWrap,
-                                              padding: WidgetStateProperty.all(
-                                                EdgeInsets.symmetric(
-                                                    horizontal: 16,
-                                                    vertical: 0),
-                                              ),
-                                              backgroundColor:
-                                                  WidgetStateProperty.all(
-                                                Color.fromARGB(40, 0, 0, 0),
-                                              ),
-                                              foregroundColor:
-                                                  WidgetStateProperty.all(
-                                                      Colors.black),
-                                            ),
-                                            onPressed: () {
-                                              BaseController
-                                                  .to.currentNavIndex.value = 2;
-                                            },
-                                            child: Text(
-                                              'Log in',
-                                              style: TextStyle(fontSize: 14),
-                                            ),
-                                          ),
                                         ],
                                       ),
-                                    ],
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                            firstPageProgressIndicatorBuilder: (context) =>
-                                Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                            newPageProgressIndicatorBuilder: (context) =>
-                                Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                            noMoreItemsIndicatorBuilder: (context) => Center(
-                              child: Column(
+                          );
+                        },
+                        noItemsFoundIndicatorBuilder: (context) => Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(top: 1),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(16),
+                                  bottomRight: Radius.circular(16),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                spacing: 0,
                                 children: [
-                                  SizedBox(height: 10),
-                                  Text(
-                                    'No more lists',
-                                    style: TextStyle(fontSize: 0),
+                                  Column(
+                                    spacing: 16,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image(
+                                        width: screenwidth * 0.5,
+                                        height: screenwidth * 0.5,
+                                        image: AssetImage(
+                                            'assets/visuals/vis1.png'),
+                                      ),
+                                      Text(
+                                        'No lists found,\nyou can create one!',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 20,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      SizedBox(height: 10),
+                                    ],
                                   ),
                                 ],
                               ),
                             ),
                           ),
                         ),
+
+                        // if not authenticated
+                        firstPageErrorIndicatorBuilder: (context) => Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(top: 1),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(16),
+                                  bottomRight: Radius.circular(16),
+                                ),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                spacing: 0,
+                                children: [
+                                  Column(
+                                    spacing: 16,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Image(
+                                        width: screenwidth * 0.5,
+                                        height: screenwidth * 0.5,
+                                        image: AssetImage(
+                                            'assets/visuals/vis2.png'),
+                                      ),
+                                      Text(
+                                        'Please log in to\ncreate a new list',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 20,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      ElevatedButton(
+                                        style: ButtonStyle(
+                                          elevation: WidgetStateProperty.all(0),
+                                          shape: WidgetStateProperty.all(
+                                            RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.all(
+                                                Radius.circular(6),
+                                              ),
+                                            ),
+                                          ),
+                                          shadowColor: WidgetStateProperty.all(
+                                              Colors.black),
+                                          tapTargetSize:
+                                              MaterialTapTargetSize.shrinkWrap,
+                                          padding: WidgetStateProperty.all(
+                                            EdgeInsets.symmetric(
+                                                horizontal: 16, vertical: 0),
+                                          ),
+                                          backgroundColor:
+                                              WidgetStateProperty.all(
+                                            Color.fromARGB(40, 0, 0, 0),
+                                          ),
+                                          foregroundColor:
+                                              WidgetStateProperty.all(
+                                                  Colors.black),
+                                        ),
+                                        onPressed: () {
+                                          BaseController
+                                              .to.currentNavIndex.value = 2;
+                                        },
+                                        child: Text(
+                                          'Log in',
+                                          style: TextStyle(fontSize: 14),
+                                        ),
+                                      ),
+                                      SizedBox(height: 0),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        firstPageProgressIndicatorBuilder: (context) => Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        newPageProgressIndicatorBuilder: (context) => Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        noMoreItemsIndicatorBuilder: (context) => Center(
+                          child: Column(
+                            children: [
+                              SizedBox(height: 0),
+                              Text(
+                                'No more lists',
+                                style: TextStyle(fontSize: 0),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
-                  ],
+                  ),
                 ),
               ],
             ),

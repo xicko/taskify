@@ -96,10 +96,10 @@ class _ListDetailsPageState extends State<ListDetailsPage> {
                                 }
                               },
                               icon: Icon(
-                                Icons.report,
+                                Icons.report_gmailerrorred_rounded,
                                 color: AppColors.bw100(
                                     Theme.of(context).brightness),
-                                size: 24,
+                                size: 28,
                               ),
                             ),
 
@@ -107,7 +107,7 @@ class _ListDetailsPageState extends State<ListDetailsPage> {
                             IconButton(
                               onPressed: () => shareList(),
                               icon: Icon(
-                                Icons.share,
+                                Icons.share_outlined,
                                 color: AppColors.bw100(
                                     Theme.of(context).brightness),
                                 size: 24,
@@ -126,7 +126,7 @@ class _ListDetailsPageState extends State<ListDetailsPage> {
                             IconButton(
                               onPressed: () => shareList(),
                               icon: Icon(
-                                Icons.share,
+                                Icons.share_outlined,
                                 color: AppColors.bw100(
                                     Theme.of(context).brightness),
                                 size: 24,
@@ -297,7 +297,7 @@ class _ListDetailsPageState extends State<ListDetailsPage> {
                   ),
                 ),
                 SizedBox(height: 20),
-                if (BaseController.to.currentNavIndex.value == 0)
+                if (widget.list['user_id'] != AuthService().getCurrentUserId())
                   SelectableText(
                     'Shared by: ${widget.list['email']?.split('@').first ?? 'Unknown'}',
                     style: TextStyle(
@@ -306,15 +306,27 @@ class _ListDetailsPageState extends State<ListDetailsPage> {
                     ),
                   ),
                 SizedBox(height: 10),
-                SelectableText(
-                  widget.list['created_at'] != null
-                      ? DateFormat.yMMMMd().format(
-                          DateTime.parse(widget.list['created_at']).toLocal())
-                      : 'Unknown',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: AppColors.bw100(Theme.of(context).brightness),
-                  ),
+                Row(
+                  spacing: 8,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.edit_note_rounded,
+                      size: 18,
+                    ),
+                    SelectableText(
+                      widget.list['updated_at'] != null
+                          ? DateFormat.yMd().add_jm().format(
+                                DateTime.parse(widget.list['updated_at'])
+                                    .toLocal(),
+                              )
+                          : 'Unknown',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: AppColors.bw100(Theme.of(context).brightness),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

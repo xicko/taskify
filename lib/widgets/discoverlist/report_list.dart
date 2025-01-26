@@ -56,8 +56,10 @@ class _ReportListState extends State<ReportList> {
         if (mounted) {
           Navigator.pop(context);
 
-          CustomSnackBar(context)
-              .show('Your report has been submitted and will be reviewed.');
+          CustomSnackBar(context).show(
+            'Your report has been submitted and will be reviewed.',
+            duration: 3000,
+          );
         }
 
         _clear();

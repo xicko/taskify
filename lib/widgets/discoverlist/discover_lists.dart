@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:taskify/auth/auth_service.dart';
 import 'package:taskify/controllers/auth_controller.dart';
 import 'package:taskify/controllers/base_controller.dart';
 import 'package:taskify/controllers/list_controller.dart';
@@ -166,47 +167,52 @@ class DiscoverLists extends StatelessWidget {
                                             ],
                                           ),
                                         ),
-                                        CustomSlidableAction(
-                                          padding: EdgeInsets.only(
-                                            top: 4,
-                                            bottom: 4,
-                                          ),
-                                          onPressed: (_) => {
-                                            if (AuthController
-                                                .to.isLoggedIn.value)
-                                              {
-                                                showDialog(
-                                                  context: context,
-                                                  builder: (_) => ReportList(
-                                                      list: item['id']),
+
+                                        // Not rendering report is list is users own list
+                                        if (item['user_id'] !=
+                                            AuthService().getCurrentUserId())
+                                          CustomSlidableAction(
+                                            padding: EdgeInsets.only(
+                                              top: 4,
+                                              bottom: 4,
+                                            ),
+                                            onPressed: (_) => {
+                                              if (AuthController
+                                                  .to.isLoggedIn.value)
+                                                {
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (_) => ReportList(
+                                                        list: item['id']),
+                                                  ),
+                                                }
+                                              else
+                                                {
+                                                  CustomSnackBar(context)
+                                                      .show('Not logged in.')
+                                                }
+                                            },
+                                            backgroundColor:
+                                                const Color.fromARGB(
+                                                    255, 247, 98, 88),
+                                            foregroundColor: Colors.black,
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  Icons.report,
+                                                  size: 24,
                                                 ),
-                                              }
-                                            else
-                                              {
-                                                CustomSnackBar(context)
-                                                    .show('Not logged in.')
-                                              }
-                                          },
-                                          backgroundColor: const Color.fromARGB(
-                                              255, 247, 98, 88),
-                                          foregroundColor: Colors.black,
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Icon(
-                                                Icons.report,
-                                                size: 24,
-                                              ),
-                                              Text(
-                                                'Report',
-                                                style: TextStyle(
-                                                  fontSize: 14,
+                                                Text(
+                                                  'Report',
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
-                                        ),
                                       ],
                                     ),
                                     child: Container(
@@ -351,13 +357,6 @@ class DiscoverLists extends StatelessWidget {
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: const Color.fromARGB(39, 0, 0, 0),
-                                      blurRadius: 8,
-                                      offset: Offset(0, 6),
-                                    ),
-                                  ],
                                   borderRadius: BorderRadius.only(
                                     bottomLeft: Radius.circular(16),
                                     bottomRight: Radius.circular(16),
@@ -372,52 +371,22 @@ class DiscoverLists extends StatelessWidget {
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
+                                        Image(
+                                          width: screenwidth * 0.5,
+                                          height: screenwidth * 0.5,
+                                          image: AssetImage(
+                                              'assets/visuals/vis1.png'),
+                                        ),
                                         Text(
-                                          'No lists found',
+                                          'No lists found,\nyou can create one!',
                                           style: TextStyle(
                                             color: Colors.black,
                                             fontWeight: FontWeight.w500,
                                             fontSize: 20,
                                           ),
+                                          textAlign: TextAlign.center,
                                         ),
-                                        ElevatedButton(
-                                          style: ButtonStyle(
-                                            elevation:
-                                                WidgetStateProperty.all(0),
-                                            shape: WidgetStateProperty.all(
-                                              RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(6),
-                                                ),
-                                              ),
-                                            ),
-                                            shadowColor:
-                                                WidgetStateProperty.all(
-                                                    Colors.black),
-                                            tapTargetSize: MaterialTapTargetSize
-                                                .shrinkWrap,
-                                            padding: WidgetStateProperty.all(
-                                              EdgeInsets.symmetric(
-                                                  horizontal: 16, vertical: 0),
-                                            ),
-                                            backgroundColor:
-                                                WidgetStateProperty.all(
-                                              Color.fromARGB(40, 0, 0, 0),
-                                            ),
-                                            foregroundColor:
-                                                WidgetStateProperty.all(
-                                                    Colors.black),
-                                          ),
-                                          onPressed: () {
-                                            ListController
-                                                .to.publicPagingController
-                                                .refresh();
-                                          },
-                                          child: Text(
-                                            'Refresh',
-                                            style: TextStyle(fontSize: 14),
-                                          ),
-                                        ),
+                                        SizedBox(height: 10),
                                       ],
                                     ),
                                   ],
@@ -433,13 +402,6 @@ class DiscoverLists extends StatelessWidget {
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: const Color.fromARGB(39, 0, 0, 0),
-                                      blurRadius: 8,
-                                      offset: Offset(0, 6),
-                                    ),
-                                  ],
                                   borderRadius: BorderRadius.only(
                                     bottomLeft: Radius.circular(16),
                                     bottomRight: Radius.circular(16),
@@ -517,10 +479,10 @@ class DiscoverLists extends StatelessWidget {
                           noMoreItemsIndicatorBuilder: (context) => Center(
                             child: Column(
                               children: [
-                                SizedBox(height: 10),
+                                SizedBox(height: 0),
                                 Text(
                                   'No more lists',
-                                  style: TextStyle(fontSize: 16),
+                                  style: TextStyle(fontSize: 0),
                                 ),
                               ],
                             ),

@@ -36,6 +36,7 @@ flutter:
 
   assets:
   - assets/fonts/
+  - assets/visuals/
   - assets/logo1500.png
   - assets/avatar.png
   - assets/logo1500white.png
