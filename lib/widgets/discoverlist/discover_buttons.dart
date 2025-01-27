@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:taskify/controllers/list_controller.dart';
+import 'package:taskify/controllers/lists_controller.dart';
+import 'package:taskify/controllers/list_creation_controller.dart';
 
 class DiscoverButtons extends StatefulWidget {
   const DiscoverButtons({super.key});
@@ -19,20 +20,20 @@ class _DiscoverButtonsState extends State<DiscoverButtons> {
     await Future.delayed(Duration(milliseconds: 500));
 
     // Turn off searchmode if already on, then refresh after
-    if (ListController.to.isDiscoverSearchMode.value) {
+    if (ListsController.to.isDiscoverSearchMode.value) {
       await Future.delayed(Duration(milliseconds: 100));
-      ListController.to.isDiscoverSearchMode.value = false;
-      ListController.to.searchDiscoverController.clear();
+      ListsController.to.isDiscoverSearchMode.value = false;
+      ListsController.to.searchDiscoverController.clear();
       await Future.delayed(Duration(milliseconds: 100));
-      ListController.to.publicPagingController.refresh();
+      ListsController.to.publicPagingController.refresh();
     }
 
     // Refreshing list pagingcontroller and clearing search input
-    ListController.to.publicPagingController.refresh();
-    ListController.to.searchDiscoverController.clear();
+    ListsController.to.publicPagingController.refresh();
+    ListsController.to.searchDiscoverController.clear();
 
     // Resetting the scrollbar to the top
-    ListController.to.listDiscoverScrollController.jumpTo(0.0);
+    ListsController.to.listDiscoverScrollController.jumpTo(0.0);
   }
 
   @override
@@ -76,7 +77,7 @@ class _DiscoverButtonsState extends State<DiscoverButtons> {
 
         ElevatedButton(
           onPressed: () {
-            ListController.to.addNewList(context);
+            ListCreationController.to.addNewList(context);
           },
           style: ButtonStyle(
             padding: WidgetStateProperty.all(

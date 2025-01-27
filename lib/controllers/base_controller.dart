@@ -2,7 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:taskify/auth/auth_service.dart';
-import 'package:taskify/controllers/list_controller.dart';
+import 'package:taskify/controllers/lists_controller.dart';
+import 'package:taskify/controllers/list_creation_controller.dart';
 import 'package:taskify/controllers/ui_controller.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -25,12 +26,9 @@ class BaseController extends GetxController {
     // Unfocusing elements(TextField) if nav index is changed
     FocusManager.instance.primaryFocus?.unfocus();
 
-    ListController.to.isNewListModalVisible.value = false;
-    ListController.to.isMySearchMode.value = false;
-    ListController.to.isDiscoverSearchMode.value = false;
-
-    // ListController.to.pagingController.refresh();
-    // ListController.to.publicPagingController.refresh();
+    ListCreationController.to.isNewListModalVisible.value = false;
+    ListsController.to.isMySearchMode.value = false;
+    ListsController.to.isDiscoverSearchMode.value = false;
 
     UIController.to.listDetailPageOpen.value = false;
     AuthService().supabase.auth.refreshSession();
@@ -41,7 +39,7 @@ class BaseController extends GetxController {
   }
 
   void showNewListModal() {
-    ListController.to.isNewListModalVisible.value = true;
+    ListCreationController.to.isNewListModalVisible.value = true;
     debugPrint('shownewlist');
   }
 

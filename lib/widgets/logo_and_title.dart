@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:taskify/controllers/base_controller.dart';
-import 'package:taskify/controllers/list_controller.dart';
+import 'package:taskify/controllers/list_creation_controller.dart';
 import 'package:taskify/controllers/ui_controller.dart';
 import 'package:taskify/widgets/abouttaskify.dart';
 import 'package:taskify/theme/colors.dart';
@@ -16,7 +16,7 @@ class LogoAndTitle extends StatelessWidget {
 
     return Obx(
       () => AnimatedOpacity(
-        opacity: ListController.to.isNewListModalVisible.value ||
+        opacity: ListCreationController.to.isNewListModalVisible.value ||
                 UIController.to.listDetailPageOpen.value
             ? 0
             : 1,

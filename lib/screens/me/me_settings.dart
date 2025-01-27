@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:taskify/auth/auth_service.dart';
 import 'package:taskify/controllers/auth_controller.dart';
 import 'package:taskify/controllers/edit_user_controller.dart';
-import 'package:taskify/controllers/list_controller.dart';
+import 'package:taskify/controllers/lists_controller.dart';
 import 'package:taskify/controllers/ui_controller.dart';
 import 'package:taskify/widgets/abouttaskify.dart';
 import 'package:taskify/screens/me/edit_user.dart';
@@ -107,7 +107,7 @@ class MeSettingsState extends State<MeSettings> {
                 var userId = AuthService().getCurrentUserId();
 
                 if (userId != null) {
-                  await ListController.to.exportUserLists(context, 0);
+                  await ListsController.to.exportUserLists(context, 0);
                 } else {
                   // Handle the case where no user is logged in
                   // CustomSnackBar(context).show('No user is logged in. Please log in to export lists.');
@@ -178,12 +178,12 @@ class MeSettingsState extends State<MeSettings> {
                         // Confirm delete button
                         GestureDetector(
                           onTap: () async {
-                            ListController.to.deleteAllUserLists();
+                            ListsController.to.deleteAllUserLists();
                             Navigator.of(context).pop();
 
                             await Future.delayed(Duration(milliseconds: 400));
-                            ListController.to.pagingController.refresh();
-                            ListController.to.publicPagingController.refresh();
+                            ListsController.to.pagingController.refresh();
+                            ListsController.to.publicPagingController.refresh();
 
                             if (context.mounted) {
                               CustomSnackBar(context).show('Deleted all lists');
@@ -271,7 +271,7 @@ class MeSettingsState extends State<MeSettings> {
 
                 // Refresh users list after slight delay
                 await Future.delayed(Duration(milliseconds: 100));
-                ListController.to.pagingController.refresh();
+                ListsController.to.pagingController.refresh();
               },
               style: TextButton.styleFrom(
                   foregroundColor:

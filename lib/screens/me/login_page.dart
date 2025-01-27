@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:taskify/auth/auth_service.dart';
 import 'package:taskify/controllers/base_controller.dart';
-import 'package:taskify/controllers/list_controller.dart';
+import 'package:taskify/controllers/lists_controller.dart';
 import 'package:taskify/controllers/ui_controller.dart';
 import 'package:taskify/theme/colors.dart';
 import 'package:taskify/widgets/snackbar.dart';
@@ -41,8 +41,8 @@ class LoginPageState extends State<LoginPage> {
           UIController.to.loginVisibility.value = false;
 
           // Refresh lists
-          ListController.to.pagingController.refresh();
-          ListController.to.publicPagingController.refresh();
+          ListsController.to.pagingController.refresh();
+          ListsController.to.publicPagingController.refresh();
         } else {
           if (mounted) {
             CustomSnackBar(context).show("Login failed. Check credentials.");
@@ -62,7 +62,7 @@ class LoginPageState extends State<LoginPage> {
       CustomSnackBar(context).show('Please fill in all fields.');
     }
 
-    ListController.to.pagingController.refresh();
+    ListsController.to.pagingController.refresh();
   }
 
   @override

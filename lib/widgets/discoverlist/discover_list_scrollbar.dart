@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:taskify/controllers/base_controller.dart';
-import 'package:taskify/controllers/list_controller.dart';
+import 'package:taskify/controllers/lists_controller.dart';
+import 'package:taskify/controllers/list_creation_controller.dart';
 
 class DiscoverListScrollbar extends StatelessWidget {
   const DiscoverListScrollbar({super.key});
@@ -16,7 +17,7 @@ class DiscoverListScrollbar extends StatelessWidget {
           child: GestureDetector(
             onVerticalDragUpdate: (details) {
               // Calculate the new scroll offset based on drag movement
-              final maxScrollExtent = ListController
+              final maxScrollExtent = ListsController
                   .to.listDiscoverScrollController.position.maxScrollExtent;
 
               // Calculate the new offset based on the scrollbar's drag
@@ -24,22 +25,22 @@ class DiscoverListScrollbar extends StatelessWidget {
               final scrollRatio =
                   maxScrollExtent / 300; // 300 is the fixed height
               final newOffset =
-                  ListController.to.listDiscoverScrollController.offset +
+                  ListsController.to.listDiscoverScrollController.offset +
                       deltaScroll * scrollRatio;
 
               // Ensure the offset stays within valid bounds
-              ListController.to.listDiscoverScrollController.jumpTo(
+              ListsController.to.listDiscoverScrollController.jumpTo(
                 newOffset.clamp(
-                  ListController
+                  ListsController
                       .to.listDiscoverScrollController.position.minScrollExtent,
-                  ListController
+                  ListsController
                       .to.listDiscoverScrollController.position.maxScrollExtent,
                 ),
               );
 
               // Update the scrollbar position based on the new scroll offset
-              ListController.to.discoverScrollbarPosition.value =
-                  ListController.to.listDiscoverScrollController.offset /
+              ListsController.to.discoverScrollbarPosition.value =
+                  ListsController.to.listDiscoverScrollController.offset /
                       maxScrollExtent;
             },
             child: Container(
@@ -49,15 +50,16 @@ class DiscoverListScrollbar extends StatelessWidget {
               alignment: Alignment.topRight,
               child: Obx(
                 () => AnimatedOpacity(
-                  opacity:
-                      ListController.to.isNewListModalVisible.value ? 0 : 1,
+                  opacity: ListCreationController.to.isNewListModalVisible.value
+                      ? 0
+                      : 1,
                   duration: Duration(milliseconds: 250),
                   child: Container(
                     // Fixed height of the scrollbar
                     height: 50,
                     width: 10,
                     margin: EdgeInsets.only(
-                      top: (ListController.to.discoverScrollbarPosition.value *
+                      top: (ListsController.to.discoverScrollbarPosition.value *
                               (300 - 50))
                           // Ensure non negative
                           .clamp(0.0, double.infinity),

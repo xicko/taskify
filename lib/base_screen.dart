@@ -4,7 +4,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:taskify/controllers/list_controller.dart';
+import 'package:taskify/controllers/list_creation_controller.dart';
 import 'package:taskify/navs/home_nav.dart';
 import 'package:taskify/navs/discover_nav.dart';
 import 'package:taskify/navs/me_nav.dart';
@@ -62,10 +62,11 @@ class _BaseScreenState extends State<BaseScreen> {
                   children: [
                     // Add new list modal
                     AnimatedPositioned(
-                      bottom: ListController.to.isNewListModalVisible.value
-                          ? 0
-                          : -screenHeight,
-                      top: ListController.to.isNewListModalVisible.value
+                      bottom:
+                          ListCreationController.to.isNewListModalVisible.value
+                              ? 0
+                              : -screenHeight,
+                      top: ListCreationController.to.isNewListModalVisible.value
                           ? 0
                           : screenHeight,
                       left: 0,

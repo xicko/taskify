@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:taskify/controllers/list_controller.dart';
+import 'package:taskify/controllers/lists_controller.dart';
+import 'package:taskify/controllers/list_creation_controller.dart';
 
 class HomeButtons extends StatefulWidget {
   const HomeButtons({super.key});
@@ -20,20 +21,20 @@ class _HomeButtonsState extends State<HomeButtons> {
     await Future.delayed(Duration(milliseconds: 500));
 
     // Turn off searchmode if already on, then refresh after
-    if (ListController.to.isMySearchMode.value) {
+    if (ListsController.to.isMySearchMode.value) {
       await Future.delayed(Duration(milliseconds: 100));
-      ListController.to.isMySearchMode.value = false;
-      ListController.to.searchMyController.clear();
+      ListsController.to.isMySearchMode.value = false;
+      ListsController.to.searchMyController.clear();
       await Future.delayed(Duration(milliseconds: 100));
-      ListController.to.pagingController.refresh();
+      ListsController.to.pagingController.refresh();
     }
 
     // Refreshing list pagingcontroller and clearing search input
-    ListController.to.pagingController.refresh();
-    ListController.to.searchMyController.clear();
+    ListsController.to.pagingController.refresh();
+    ListsController.to.searchMyController.clear();
 
     // Resetting the scrollbar to the top
-    ListController.to.listMyScrollController.jumpTo(0.0);
+    ListsController.to.listMyScrollController.jumpTo(0.0);
   }
 
   @override
@@ -79,7 +80,7 @@ class _HomeButtonsState extends State<HomeButtons> {
         // New List button
         ElevatedButton(
           onPressed: () async {
-            ListController.to.addNewList(context);
+            ListCreationController.to.addNewList(context);
           },
           style: ButtonStyle(
             padding: WidgetStateProperty.all(

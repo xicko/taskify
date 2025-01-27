@@ -8,7 +8,8 @@ import 'package:taskify/auth/auth_key.dart';
 import 'package:taskify/controllers/auth_controller.dart';
 import 'package:taskify/controllers/base_controller.dart';
 import 'package:taskify/controllers/edit_user_controller.dart';
-import 'package:taskify/controllers/list_controller.dart';
+import 'package:taskify/controllers/lists_controller.dart';
+import 'package:taskify/controllers/list_creation_controller.dart';
 import 'package:taskify/controllers/report_controller.dart';
 import 'package:taskify/controllers/ui_controller.dart';
 import 'package:taskify/theme/theme.dart';
@@ -33,7 +34,8 @@ void main() {
       Get.put<BaseController>(BaseController());
       Get.put<AuthController>(AuthController());
       Get.put<UIController>(UIController());
-      Get.put<ListController>(ListController());
+      Get.put<ListsController>(ListsController());
+      Get.put<ListCreationController>(ListCreationController());
       Get.put<EditUserController>(EditUserController());
       Get.put<ReportController>(ReportController());
 

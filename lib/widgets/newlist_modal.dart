@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:taskify/constants/forbidden_words.dart';
-import 'package:taskify/controllers/list_controller.dart';
+import 'package:taskify/controllers/lists_controller.dart';
+import 'package:taskify/controllers/list_creation_controller.dart';
 import 'package:taskify/theme/colors.dart';
 import 'package:taskify/widgets/snackbar.dart';
 
@@ -17,9 +18,9 @@ class NewListModal extends StatefulWidget {
 class NewListModalState extends State<NewListModal> {
   // TextField Controllers
   final TextEditingController titleController =
-      ListController.to.titleController;
+      ListCreationController.to.titleController;
   final TextEditingController contentController =
-      ListController.to.contentController;
+      ListCreationController.to.contentController;
 
   // FocusNodes for textfields
   final FocusNode _titleFocusNode = FocusNode();
@@ -28,6 +29,7 @@ class NewListModalState extends State<NewListModal> {
   // Flag to track characterCount in content
   final ValueNotifier<int> characterCount = ValueNotifier<int>(0);
 
+  // Create / edit list
   void _createOrSave() async {
     String title = titleController.text;
     String content = contentController.text;
@@ -44,43 +46,43 @@ class NewListModalState extends State<NewListModal> {
 
     if (title.isEmpty || content.isEmpty) {
       CustomSnackBar(context).show('List cannot be empty');
-    } else if (ListController.to.isPublic.value &&
+    } else if (ListCreationController.to.isPublic.value &&
         // If ispublic toggle is true, check for forbidden words
         (containsForbiddenWords(title) || containsForbiddenWords(content))) {
       CustomSnackBar(context)
           .show('Inappropriate language is not allowed in public lists.');
     } else {
-      // Editing
-      if (ListController.to.isEditMode.value) {
-        ListController.to.updateList(
+      if (ListCreationController.to.isEditMode.value == false) {
+        // Creation
+        ListCreationController.to.createList(
+            context, title, content, ListCreationController.to.isPublic.value);
+      } else {
+        // Editing
+        ListCreationController.to.updateList(
           context,
           title,
           content,
-          ListController.to.isPublic.value,
-          ListController.to.editListId!.value!,
+          ListCreationController.to.isPublic.value,
+          ListCreationController.to.editListId!.value!,
         );
-      } else {
-        // Creation
-        ListController.to.createList(
-            context, title, content, ListController.to.isPublic.value);
       }
 
-      // refreshing lists after
+      // Refreshing lists after
       await Future.delayed(Duration(milliseconds: 800));
-      ListController.to.pagingController.refresh();
-      ListController.to.publicPagingController.refresh();
+      ListsController.to.pagingController.refresh();
+      ListsController.to.publicPagingController.refresh();
 
-      // resetting the new list modal after creation
+      // Resetting the new list modal after creation
       await Future.delayed(Duration(milliseconds: 1000));
       titleController.clear();
       contentController.clear();
-      ListController.to.isPublic.value = false;
+      ListCreationController.to.isPublic.value = false;
     }
   }
 
   void _cancel() {
     // Closing NewListModal
-    ListController.to.isNewListModalVisible.value = false;
+    ListCreationController.to.isNewListModalVisible.value = false;
 
     // Unfocusing text fields
     _titleFocusNode.unfocus();
@@ -88,8 +90,8 @@ class NewListModalState extends State<NewListModal> {
 
     // Clearing isPublic toggle on cancel if EditMode was true
     // Basically clearing the toggle for the next time the modal is opened
-    if (ListController.to.isEditMode.value) {
-      ListController.to.isPublic.value = false;
+    if (ListCreationController.to.isEditMode.value) {
+      ListCreationController.to.isPublic.value = false;
     }
   }
 
@@ -101,18 +103,19 @@ class NewListModalState extends State<NewListModal> {
       characterCount.value = contentController.text.length;
     });
 
-    if (ListController.to.editListId?.value != null) {
+    if (ListCreationController.to.editListId?.value != null) {
       // Checks if editListId is not null. If true, it populates the fields
       // Basically populating fields if editing
-      titleController.text = ListController.to.editTitle?.value ?? '';
-      contentController.text = ListController.to.editContent?.value ?? '';
-      ListController.to.isPublic.value =
-          ListController.to.editIsPublic?.value ?? false;
+      titleController.text = ListCreationController.to.editTitle?.value ?? '';
+      contentController.text =
+          ListCreationController.to.editContent?.value ?? '';
+      ListCreationController.to.isPublic.value =
+          ListCreationController.to.editIsPublic?.value ?? false;
     } else {
       // Clear
       titleController.clear();
       contentController.clear();
-      ListController.to.isPublic.value = false;
+      ListCreationController.to.isPublic.value = false;
     }
   }
 
@@ -162,12 +165,16 @@ class NewListModalState extends State<NewListModal> {
               final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
               final availableHeight = screenHeight - keyboardHeight;
 
-              if (ListController.to.isEditMode.value) {
-                titleController.text = ListController.to.editTitle?.value ?? '';
+              // Only populate inputs if EditMode is true, and both controllers are empty
+              if (ListCreationController.to.isEditMode.value &&
+                  titleController.text.isEmpty &&
+                  contentController.text.isEmpty) {
+                titleController.text =
+                    ListCreationController.to.editTitle?.value ?? '';
                 contentController.text =
-                    ListController.to.editContent?.value ?? '';
-                ListController.to.isPublic.value =
-                    ListController.to.editIsPublic?.value ?? false;
+                    ListCreationController.to.editContent?.value ?? '';
+                ListCreationController.to.isPublic.value =
+                    ListCreationController.to.editIsPublic?.value ?? false;
               }
 
               return Center(
@@ -180,7 +187,7 @@ class NewListModalState extends State<NewListModal> {
 
                       // Title
                       Text(
-                        ListController.to.isEditMode.value
+                        ListCreationController.to.isEditMode.value
                             ? 'Edit List'
                             : 'Create New List',
                         style: TextStyle(
@@ -300,75 +307,87 @@ class NewListModalState extends State<NewListModal> {
                                   ),
                                 ),
                               ),
+
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
+                                  // Character Count
                                   Padding(
-                                      padding:
-                                          EdgeInsets.only(left: 24, bottom: 4),
-                                      child: ValueListenableBuilder<int>(
-                                          valueListenable: characterCount,
-                                          builder: (context, count, child) {
-                                            return Text(
-                                              '$count / 5000',
-                                              style: TextStyle(
-                                                fontSize: 16,
-                                                color: Colors.black87,
-                                                fontWeight: FontWeight.w500,
-                                              ),
-                                            );
-                                          })),
-                                  Expanded(
-                                      child: Obx(
-                                    () => SwitchListTile(
-                                      title: Align(
-                                        alignment: Alignment.centerRight,
-                                        child: Text(
-                                          ListController.to.isPublic.value
-                                              ? 'Public'
-                                              : 'Private',
-                                          textAlign: TextAlign.end,
+                                    padding:
+                                        EdgeInsets.only(left: 24, bottom: 4),
+                                    child: ValueListenableBuilder<int>(
+                                      valueListenable: characterCount,
+                                      builder: (context, count, child) {
+                                        return Text(
+                                          '$count / 5000',
                                           style: TextStyle(
                                             fontSize: 16,
                                             color: Colors.black87,
                                             fontWeight: FontWeight.w500,
                                           ),
-                                        ),
-                                      ),
-
-                                      value: ListController.to.isPublic.value,
-
-                                      dense: true,
-                                      activeColor: Color.fromARGB(255, 195, 231,
-                                          255), // Color of the switch when ON
-                                      activeTrackColor: Color.fromARGB(255, 67,
-                                          92, 109), // Track color when ON
-                                      inactiveThumbColor: Color.fromARGB(
-                                          255,
-                                          211,
-                                          211,
-                                          211), // Color of the switch when OFF
-                                      inactiveTrackColor: Color.fromARGB(
-                                          255,
-                                          117,
-                                          117,
-                                          117), // Track color when OFF
-
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(16.0),
-                                      ),
-                                      materialTapTargetSize:
-                                          MaterialTapTargetSize.shrinkWrap,
-                                      contentPadding:
-                                          EdgeInsets.only(right: 12, bottom: 6),
-                                      onChanged: (value) {
-                                        ListController.to.isPublic.value =
-                                            value;
+                                        );
                                       },
                                     ),
-                                  )),
+                                  ),
+
+                                  // Audience Toggle
+                                  Expanded(
+                                    child: Obx(
+                                      () => SwitchListTile(
+                                        title: Align(
+                                          alignment: Alignment.centerRight,
+                                          child: Text(
+                                            ListCreationController
+                                                    .to.isPublic.value
+                                                ? 'Public'
+                                                : 'Private',
+                                            textAlign: TextAlign.end,
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.black87,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+
+                                        value: ListCreationController
+                                            .to.isPublic.value,
+
+                                        dense: true,
+                                        activeColor: Color.fromARGB(
+                                            255,
+                                            195,
+                                            231,
+                                            255), // Color of the switch when ON
+                                        activeTrackColor: Color.fromARGB(255,
+                                            67, 92, 109), // Track color when ON
+                                        inactiveThumbColor: Color.fromARGB(
+                                            255,
+                                            211,
+                                            211,
+                                            211), // Color of the switch when OFF
+                                        inactiveTrackColor: Color.fromARGB(
+                                            255,
+                                            117,
+                                            117,
+                                            117), // Track color when OFF
+
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(16.0),
+                                        ),
+                                        materialTapTargetSize:
+                                            MaterialTapTargetSize.shrinkWrap,
+                                        contentPadding: EdgeInsets.only(
+                                            right: 12, bottom: 6),
+                                        onChanged: (value) {
+                                          ListCreationController
+                                              .to.isPublic.value = value;
+                                        },
+                                      ),
+                                    ),
+                                  ),
                                 ],
                               ),
                             ],
@@ -381,6 +400,8 @@ class NewListModalState extends State<NewListModal> {
               );
             },
           ),
+
+          // Buttons
           Positioned(
             bottom: 18,
             left: 0,
@@ -457,11 +478,11 @@ class NewListModalState extends State<NewListModal> {
                   ),
                   child: Row(
                     // Optical styling adjustment for different button state
-                    spacing: ListController.to.isEditMode.value ? 4 : 0,
+                    spacing: ListCreationController.to.isEditMode.value ? 4 : 0,
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        ListController.to.isEditMode.value
+                        ListCreationController.to.isEditMode.value
                             ? 'Save List'
                             : 'Create List',
                         style: TextStyle(
@@ -471,10 +492,12 @@ class NewListModalState extends State<NewListModal> {
                         ),
                       ),
                       Icon(
-                        ListController.to.isEditMode.value
+                        ListCreationController.to.isEditMode.value
                             ? Icons.save
                             : Icons.add,
-                        size: ListController.to.isEditMode.value ? 18 : 22,
+                        size: ListCreationController.to.isEditMode.value
+                            ? 18
+                            : 22,
                         color: Colors.black87,
                       ),
                     ],

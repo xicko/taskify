@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:taskify/controllers/list_controller.dart';
+import 'package:taskify/controllers/lists_controller.dart';
 import 'package:taskify/theme/colors.dart';
 import 'package:taskify/widgets/mylist/searchbar_mylist.dart';
 
@@ -22,7 +22,7 @@ class MyListSkeletonLoader extends StatelessWidget {
               ),
 
               // Items to show
-              itemCount: ListController.to.isMySearchMode.value ? 1 : 10,
+              itemCount: ListsController.to.isMySearchMode.value ? 1 : 10,
               itemBuilder: (context, index) {
                 bool isFirst = index == 0;
                 bool isLast = index == 9;
@@ -38,12 +38,12 @@ class MyListSkeletonLoader extends StatelessWidget {
                           topRight: isFirst ? Radius.circular(0) : Radius.zero,
                           bottomLeft: isLast
                               ? Radius.circular(16)
-                              : ListController.to.isMySearchMode.value
+                              : ListsController.to.isMySearchMode.value
                                   ? Radius.circular(16)
                                   : Radius.zero,
                           bottomRight: isLast
                               ? Radius.circular(16)
-                              : ListController.to.isMySearchMode.value
+                              : ListsController.to.isMySearchMode.value
                                   ? Radius.circular(16)
                                   : Radius.zero,
                         ),

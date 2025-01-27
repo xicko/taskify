@@ -4,8 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:taskify/auth/auth_service.dart';
 import 'package:taskify/controllers/auth_controller.dart';
-import 'package:taskify/controllers/base_controller.dart';
-import 'package:taskify/controllers/list_controller.dart';
+import 'package:taskify/controllers/lists_controller.dart';
+import 'package:taskify/controllers/list_creation_controller.dart';
 import 'package:taskify/controllers/ui_controller.dart';
 import 'package:taskify/theme/colors.dart';
 import 'package:taskify/widgets/discoverlist/report_list.dart';
@@ -37,7 +37,7 @@ class _ListDetailsPageState extends State<ListDetailsPage> {
   Widget build(BuildContext context) {
     return Obx(
       () => AnimatedOpacity(
-        opacity: ListController.to.isNewListModalVisible.value ? 0 : 1,
+        opacity: ListCreationController.to.isNewListModalVisible.value ? 0 : 1,
         duration: Duration(milliseconds: 400),
         child: Scaffold(
           backgroundColor: AppColors.listDetailBG(Theme.of(context).brightness),
@@ -45,7 +45,9 @@ class _ListDetailsPageState extends State<ListDetailsPage> {
             preferredSize: Size.fromHeight(kToolbarHeight),
             child: Obx(
               () => AnimatedOpacity(
-                opacity: ListController.to.isNewListModalVisible.value ? 0 : 1,
+                opacity: ListCreationController.to.isNewListModalVisible.value
+                    ? 0
+                    : 1,
                 duration: Duration(),
                 child: AppBar(
                   // Custom back button
@@ -140,16 +142,17 @@ class _ListDetailsPageState extends State<ListDetailsPage> {
                                         .getCurrentUserId()
                                         .toString() ==
                                     widget.list['user_id']) {
-                                  ListController.to.editListId?.value =
+                                  ListCreationController.to.editListId?.value =
                                       widget.list['id'];
-                                  ListController.to.editTitle?.value =
+                                  ListCreationController.to.editTitle?.value =
                                       widget.list['title'];
-                                  ListController.to.editContent?.value =
+                                  ListCreationController.to.editContent?.value =
                                       widget.list['content'];
-                                  ListController.to.editIsPublic?.value =
+                                  ListCreationController
+                                          .to.editIsPublic?.value =
                                       widget.list['is_public'] ?? false;
 
-                                  ListController
+                                  ListCreationController
                                       .to.isNewListModalVisible.value = true;
                                 } else {
                                   null;
@@ -214,7 +217,7 @@ class _ListDetailsPageState extends State<ListDetailsPage> {
                                           GestureDetector(
                                             onTap: () async {
                                               Navigator.of(context).pop();
-                                              ListController.to.deleteList(
+                                              ListsController.to.deleteList(
                                                   context, widget.list['id']);
                                               await Future.delayed(
                                                   Duration(milliseconds: 100));
@@ -227,9 +230,10 @@ class _ListDetailsPageState extends State<ListDetailsPage> {
                                               if (context.mounted) {
                                                 Navigator.pop(context);
                                               }
-                                              ListController.to.pagingController
+                                              ListsController
+                                                  .to.pagingController
                                                   .refresh();
-                                              ListController
+                                              ListsController
                                                   .to.publicPagingController
                                                   .refresh();
                                             },
@@ -271,6 +275,8 @@ class _ListDetailsPageState extends State<ListDetailsPage> {
               ),
             ),
           ),
+
+          // List body
           body: Padding(
             padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             child: Column(

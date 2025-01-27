@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:taskify/auth/auth_service.dart';
 import 'package:taskify/controllers/base_controller.dart';
-import 'package:taskify/controllers/list_controller.dart';
+import 'package:taskify/controllers/lists_controller.dart';
 import 'package:taskify/controllers/ui_controller.dart';
 import 'package:taskify/theme/colors.dart';
 import 'package:taskify/widgets/snackbar.dart';
@@ -67,7 +67,7 @@ class SignupPageState extends State<SignupPage> {
     }
 
     await Future.delayed(Duration(milliseconds: 100));
-    ListController.to.pagingController.refresh();
+    ListsController.to.pagingController.refresh();
   }
 
   @override

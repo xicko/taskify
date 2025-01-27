@@ -7,7 +7,8 @@ import 'package:share_plus/share_plus.dart';
 import 'package:taskify/auth/auth_service.dart';
 import 'package:taskify/controllers/auth_controller.dart';
 import 'package:taskify/controllers/base_controller.dart';
-import 'package:taskify/controllers/list_controller.dart';
+import 'package:taskify/controllers/lists_controller.dart';
+import 'package:taskify/controllers/list_creation_controller.dart';
 import 'package:taskify/controllers/ui_controller.dart';
 import 'package:taskify/screens/list_details_page.dart';
 import 'package:taskify/theme/colors.dart';
@@ -20,8 +21,8 @@ class MyLists extends StatelessWidget {
 
   // Refresh list
   Future<void> _pullToRefresh() async {
-    ListController.to.pagingController.refresh();
-    ListController.to.searchMyController.clear();
+    ListsController.to.pagingController.refresh();
+    ListsController.to.searchMyController.clear();
   }
 
   // List item OnTap func
@@ -107,7 +108,7 @@ class MyLists extends StatelessWidget {
                   Navigator.of(context).pop();
 
                   // Deleting list
-                  ListController.to.deleteList(context, item['id']);
+                  ListsController.to.deleteList(context, item['id']);
                   await Future.delayed(Duration(milliseconds: 100));
 
                   // Showing deleted message
@@ -117,13 +118,13 @@ class MyLists extends StatelessWidget {
                   await Future.delayed(Duration(milliseconds: 500));
 
                   // Removing from the list UI
-                  final items = ListController.to.pagingController.itemList;
+                  final items = ListsController.to.pagingController.itemList;
                   if (items != null && index >= 0 && index < items.length) {
                     // Remove only if 3 safety checks above are met
                     items.removeAt(index);
 
                     // Notify the PagingController about the change
-                    ListController.to.pagingController.itemList =
+                    ListsController.to.pagingController.itemList =
                         List.of(items);
                   }
 
@@ -157,6 +158,7 @@ class MyLists extends StatelessWidget {
     Share.share('https://taskify.xicko.co/?list=${item['id']}');
   }
 
+  // Main UI
   @override
   Widget build(BuildContext context) {
     // getting user's device screen height/width
@@ -165,7 +167,7 @@ class MyLists extends StatelessWidget {
 
     return Obx(
       () => AnimatedOpacity(
-        opacity: ListController.to.isNewListModalVisible.value ||
+        opacity: ListCreationController.to.isNewListModalVisible.value ||
                 UIController.to.listDetailPageOpen.value
             ? 0
             : 1,
@@ -193,8 +195,8 @@ class MyLists extends StatelessWidget {
                     child: PagedListView(
                       physics: AlwaysScrollableScrollPhysics(),
                       scrollController:
-                          ListController.to.listMyScrollController,
-                      pagingController: ListController.to.pagingController,
+                          ListsController.to.listMyScrollController,
+                      pagingController: ListsController.to.pagingController,
                       padding: EdgeInsets.only(
                         bottom: AuthController.to.isLoggedIn.value ? 40 : 0,
                         top: 1,
@@ -206,7 +208,7 @@ class MyLists extends StatelessWidget {
                         itemBuilder: (context, item, index) {
                           // bool isFirst = index == 0;
                           bool isLast = index ==
-                              ListController
+                              ListsController
                                       .to.pagingController.itemList!.length -
                                   1;
                           return Padding(

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:taskify/controllers/list_controller.dart';
+import 'package:taskify/controllers/lists_controller.dart';
 import 'package:taskify/widgets/discoverlist/discover_buttons.dart';
 import 'package:taskify/widgets/logo_and_title.dart';
 import 'package:taskify/widgets/discoverlist/discover_lists.dart';
@@ -23,7 +23,7 @@ class DiscoverPageState extends State<DiscoverPage>
 
   Future<void> initializeApp() async {
     // Refreshing lists at start
-    ListController.to.publicPagingController.refresh();
+    ListsController.to.publicPagingController.refresh();
   }
 
   @override

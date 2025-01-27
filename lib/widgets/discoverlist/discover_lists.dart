@@ -7,7 +7,8 @@ import 'package:share_plus/share_plus.dart';
 import 'package:taskify/auth/auth_service.dart';
 import 'package:taskify/controllers/auth_controller.dart';
 import 'package:taskify/controllers/base_controller.dart';
-import 'package:taskify/controllers/list_controller.dart';
+import 'package:taskify/controllers/lists_controller.dart';
+import 'package:taskify/controllers/list_creation_controller.dart';
 import 'package:taskify/controllers/ui_controller.dart';
 import 'package:taskify/screens/list_details_page.dart';
 import 'package:taskify/widgets/discoverlist/report_list.dart';
@@ -19,8 +20,8 @@ class DiscoverLists extends StatelessWidget {
   const DiscoverLists({super.key});
 
   Future<void> _pullToRefresh() async {
-    ListController.to.publicPagingController.refresh();
-    ListController.to.searchDiscoverController.clear();
+    ListsController.to.publicPagingController.refresh();
+    ListsController.to.searchDiscoverController.clear();
   }
 
   // Share list url
@@ -37,7 +38,7 @@ class DiscoverLists extends StatelessWidget {
 
     return Obx(
       () => AnimatedOpacity(
-        opacity: ListController.to.isNewListModalVisible.value ||
+        opacity: ListCreationController.to.isNewListModalVisible.value ||
                 UIController.to.listDetailPageOpen.value
             ? 0
             : 1,
@@ -70,9 +71,9 @@ class DiscoverLists extends StatelessWidget {
                         physics: AlwaysScrollableScrollPhysics(),
                         padding: EdgeInsets.only(bottom: 40, top: 1),
                         scrollController:
-                            ListController.to.listDiscoverScrollController,
+                            ListsController.to.listDiscoverScrollController,
                         pagingController:
-                            ListController.to.publicPagingController,
+                            ListsController.to.publicPagingController,
                         builderDelegate:
                             PagedChildBuilderDelegate<Map<String, dynamic>>(
                           animateTransitions: true,
@@ -80,7 +81,7 @@ class DiscoverLists extends StatelessWidget {
                           itemBuilder: (context, item, index) {
                             // bool isFirst = index == 0;
                             bool isLast = index ==
-                                ListController.to.publicPagingController
+                                ListsController.to.publicPagingController
                                         .itemList!.length -
                                     1;
 

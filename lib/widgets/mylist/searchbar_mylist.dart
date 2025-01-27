@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:taskify/controllers/list_controller.dart';
+import 'package:taskify/controllers/lists_controller.dart';
 import 'package:taskify/widgets/snackbar.dart';
 
 class SearchBarMyList extends StatelessWidget {
@@ -16,12 +16,12 @@ class SearchBarMyList extends StatelessWidget {
             // Search Input
             Expanded(
               child: TextField(
-                controller: ListController.to.searchMyController,
+                controller: ListsController.to.searchMyController,
                 textInputAction: TextInputAction.search,
                 onSubmitted: (_) {
                   // only search if input is not empty
-                  if (ListController.to.searchMyController.text.isNotEmpty) {
-                    ListController.to.searchMyLists();
+                  if (ListsController.to.searchMyController.text.isNotEmpty) {
+                    ListsController.to.searchMyLists();
                   }
                 },
                 //onChanged: (value) async {
@@ -53,9 +53,9 @@ class SearchBarMyList extends StatelessWidget {
 
             // Clear input button
             ValueListenableBuilder<TextEditingValue>(
-              valueListenable: ListController.to.searchMyController,
+              valueListenable: ListsController.to.searchMyController,
               builder: (context, value, child) {
-                return ListController.to.searchMyController.text.isNotEmpty
+                return ListsController.to.searchMyController.text.isNotEmpty
                     ? SizedBox(
                         width: 25,
                         height: 25,
@@ -67,7 +67,7 @@ class SearchBarMyList extends StatelessWidget {
                             backgroundColor: Colors.transparent,
                           ),
                           onPressed: () {
-                            ListController.to.searchMyController.clear();
+                            ListsController.to.searchMyController.clear();
                           },
                           icon: Icon(
                             Icons.clear_rounded,
@@ -102,9 +102,9 @@ class SearchBarMyList extends StatelessWidget {
               ),
               onPressed: () {
                 // Button only active if input is not empty
-                if (ListController.to.searchMyController.text.isNotEmpty) {
+                if (ListsController.to.searchMyController.text.isNotEmpty) {
                   CustomSnackBar(context).show('Searching...');
-                  ListController.to.searchMyLists();
+                  ListsController.to.searchMyLists();
                 }
               },
               child: Row(
