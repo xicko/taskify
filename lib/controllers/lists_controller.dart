@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:taskify/auth/auth_service.dart';
 import 'package:taskify/controllers/list_creation_controller.dart';
+import 'package:taskify/controllers/list_selection_controller.dart';
 import 'package:taskify/controllers/ui_controller.dart';
 import 'package:taskify/widgets/snackbar.dart';
 
@@ -49,8 +50,14 @@ class ListsController extends GetxController {
     // If the search text is empty, turn off search mode
     searchMyController.addListener(() async {
       if (searchMyController.text.isEmpty) {
+        // Clear & Close selection mode
+        ListSelectionController.to.closeSelectionBar();
+
+        // Close searchmode
         await Future.delayed(Duration(milliseconds: 100));
         isMySearchMode.value = false;
+
+        // Refresh list
         await Future.delayed(Duration(milliseconds: 100));
         pagingController.refresh();
       }
@@ -58,8 +65,11 @@ class ListsController extends GetxController {
 
     searchDiscoverController.addListener(() async {
       if (searchDiscoverController.text.isEmpty) {
+        // Close searchmode
         await Future.delayed(Duration(milliseconds: 100));
         isDiscoverSearchMode.value = false;
+
+        // Refresh list
         await Future.delayed(Duration(milliseconds: 100));
         publicPagingController.refresh();
       }
@@ -131,6 +141,8 @@ class ListsController extends GetxController {
 
   // Method to start search
   void searchMyLists() async {
+    ListSelectionController.to.closeSelectionBar();
+
     // My Lists page
     isMySearchMode.value = true;
 

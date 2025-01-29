@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:taskify/controllers/list_selection_controller.dart';
 import 'package:taskify/controllers/lists_controller.dart';
 import 'package:taskify/controllers/list_creation_controller.dart';
 
@@ -13,6 +15,9 @@ class _HomeButtonsState extends State<HomeButtons> {
   late double animTurns = 0.0;
 
   void _refresh() async {
+    // Clearing selectionmode when refreshing
+    ListSelectionController.to.closeSelectionBar();
+
     setState(() {
       animTurns++;
     });
@@ -80,6 +85,7 @@ class _HomeButtonsState extends State<HomeButtons> {
         // New List button
         ElevatedButton(
           onPressed: () async {
+            ListSelectionController.to.closeSelectionBar();
             ListCreationController.to.addNewList(context);
           },
           style: ButtonStyle(
@@ -119,6 +125,42 @@ class _HomeButtonsState extends State<HomeButtons> {
                 color: Colors.black87,
               ),
             ],
+          ),
+        ),
+
+        IconButton(
+          onPressed: () {
+            if (ListsController.to.pagingController.itemList?.isNotEmpty ??
+                false) {
+              ListSelectionController.to.toggleSelectionBar();
+            }
+          },
+          style: ButtonStyle(
+            padding: WidgetStateProperty.all(EdgeInsets.zero),
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            elevation: WidgetStateProperty.all(3),
+            shadowColor: WidgetStateProperty.all(Colors.black),
+            foregroundColor: WidgetStateProperty.all(Colors.black),
+            shape: WidgetStateProperty.all(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(6),
+                ),
+              ),
+            ),
+            backgroundColor: WidgetStateProperty.all(Colors.white),
+            overlayColor: WidgetStateProperty.all(
+              Color.fromARGB(255, 196, 231, 255),
+            ),
+          ),
+          icon: Obx(
+            () => Icon(
+              ListSelectionController.to.isSelectionMode.value
+                  ? Icons.edit
+                  : Icons.edit_outlined,
+              size: 20,
+              color: Colors.black87,
+            ),
           ),
         ),
       ],

@@ -74,8 +74,6 @@ class _ReportListState extends State<ReportList> {
 
   @override
   Widget build(BuildContext context) {
-    bool darkMode = isDarkMode(context);
-
     return AlertDialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
@@ -245,7 +243,9 @@ class _ReportListState extends State<ReportList> {
                     )),
                     elevation: 0,
                     backgroundColor:
-                        darkMode ? Colors.grey[800] : Colors.grey[300],
+                        Theme.of(context).brightness == Brightness.dark
+                            ? Colors.grey[800]
+                            : Colors.grey[300],
                     foregroundColor:
                         AppColors.bw100(Theme.of(context).brightness)),
                 child: Text(
@@ -286,8 +286,4 @@ class _ReportListState extends State<ReportList> {
       ],
     );
   }
-}
-
-bool isDarkMode(BuildContext context) {
-  return Theme.of(context).brightness == Brightness.dark;
 }

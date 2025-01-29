@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:taskify/controllers/lists_controller.dart';
 import 'package:taskify/widgets/discoverlist/discover_buttons.dart';
+import 'package:taskify/widgets/discoverlist/searchbar_discoverlist.dart';
 import 'package:taskify/widgets/logo_and_title.dart';
 import 'package:taskify/widgets/discoverlist/discover_lists.dart';
 // import 'package:todo/theme/colors.dart'; // theme specific colors
@@ -48,23 +49,33 @@ class DiscoverPageState extends State<DiscoverPage>
     return Scaffold(
       body: Stack(
         children: [
-          Center(
-            child: Padding(
-              padding: EdgeInsets.only(top: 30, left: 30, right: 30),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // Logo and title
-                  LogoAndTitle(),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final screenHeight = constraints.maxHeight;
+              final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+              final availableHeight = screenHeight - keyboardHeight;
 
-                  SizedBox(height: 12),
+              return Center(
+                child: Padding(
+                  padding: EdgeInsets.only(top: 30, left: 30, right: 30),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // Logo and title
+                      LogoAndTitle(),
 
-                  // Public Lists
-                  DiscoverLists(),
-                ],
-              ),
-            ),
+                      SizedBox(height: 12),
+
+                      SearchBarDiscoverList(),
+
+                      // Public Lists
+                      DiscoverLists(availableHeight: availableHeight),
+                    ],
+                  ),
+                ),
+              );
+            },
           ),
 
           // Buttons

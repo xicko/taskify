@@ -4,6 +4,7 @@ class AppColors {
   // Light
   static const Color light100black = Colors.black;
   static const Color lightScaffold = Color.fromARGB(255, 143, 210, 255);
+  static const Color lightScaffoldEditMode = Color.fromRGBO(112, 156, 188, 1);
   static const Color lightListDetailBG = Colors.white;
 
   static const Color lightLogoTitleTextIconColor = Colors.black87;
@@ -16,9 +17,14 @@ class AppColors {
 
   static const Color lightAuthButtonShadow = Color.fromARGB(110, 255, 255, 255);
 
+  static const Color lightNavProfileRing = Colors.black45;
+  static const Color lightNavProfileRingSelected =
+      Color.fromRGBO(46, 46, 46, 1);
+
   // Dark
   static const Color dark100white = Colors.white;
   static const Color darkScaffold = Color.fromARGB(255, 20, 40, 53);
+  static const Color darkScaffoldEditMode = Color.fromARGB(255, 20, 40, 53);
   static const Color darkListDetailBG = Color.fromARGB(255, 12, 27, 36);
 
   static const Color darkLogoTitleTextIconColor = Colors.white;
@@ -32,6 +38,10 @@ class AppColors {
 
   static const Color darkAuthButtonShadow = Color.fromARGB(50, 255, 255, 255);
 
+  static const Color darkNavProfileRing = Color.fromARGB(255, 144, 150, 155);
+  static const Color darkNavProfileRingSelected =
+      Color.fromARGB(198, 255, 255, 255);
+
   // Methods
   static Color bw100(Brightness brightness) {
     return brightness == Brightness.light
@@ -41,6 +51,12 @@ class AppColors {
 
   static Color scaffold(Brightness brightness) {
     return brightness == Brightness.light ? lightScaffold : darkScaffold;
+  }
+
+  static Color scaffoldEditMode(Brightness brightness) {
+    return brightness == Brightness.light
+        ? lightScaffoldEditMode
+        : darkScaffoldEditMode;
   }
 
   static Color listDetailBG(Brightness brightness) {
@@ -89,5 +105,17 @@ class AppColors {
     return brightness == Brightness.light
         ? lightAuthButtonShadow
         : darkAuthButtonShadow;
+  }
+
+  static Color navProfileRing(Brightness brightness) {
+    return brightness == Brightness.light
+        ? lightNavProfileRing
+        : darkNavProfileRing;
+  }
+
+  static Color navProfileRingSelected(Brightness brightness) {
+    return brightness == Brightness.light
+        ? lightNavProfileRingSelected
+        : darkNavProfileRingSelected;
   }
 }

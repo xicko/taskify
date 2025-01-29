@@ -1,13 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:taskify/auth/auth_service.dart';
 import 'package:taskify/controllers/auth_controller.dart';
-import 'package:taskify/controllers/lists_controller.dart';
+import 'package:taskify/controllers/avatar_controller.dart';
 import 'package:taskify/controllers/list_creation_controller.dart';
 import 'package:taskify/controllers/ui_controller.dart';
 import 'package:taskify/theme/colors.dart';
+import 'package:taskify/widgets/dialogs/delete_list_detail_dialog.dart';
 import 'package:taskify/widgets/discoverlist/report_list.dart';
 import 'package:taskify/widgets/snackbar.dart';
 
@@ -30,6 +33,21 @@ class _ListDetailsPageState extends State<ListDetailsPage> {
       'https://taskify.xicko.co/?list=${widget.list['id']}',
       subject: widget.list['title'],
     );
+  }
+
+  // Edit List method
+  void editList() {
+    if (AuthService().getCurrentUserId().toString() == widget.list['user_id']) {
+      ListCreationController.to.editListId?.value = widget.list['id'];
+      ListCreationController.to.editTitle?.value = widget.list['title'];
+      ListCreationController.to.editContent?.value = widget.list['content'];
+      ListCreationController.to.editIsPublic?.value =
+          widget.list['is_public'] ?? false;
+
+      ListCreationController.to.isNewListModalVisible.value = true;
+    } else {
+      null;
+    }
   }
 
   // Main UI
@@ -137,27 +155,7 @@ class _ListDetailsPageState extends State<ListDetailsPage> {
 
                             // Update list button
                             IconButton(
-                              onPressed: () {
-                                if (AuthService()
-                                        .getCurrentUserId()
-                                        .toString() ==
-                                    widget.list['user_id']) {
-                                  ListCreationController.to.editListId?.value =
-                                      widget.list['id'];
-                                  ListCreationController.to.editTitle?.value =
-                                      widget.list['title'];
-                                  ListCreationController.to.editContent?.value =
-                                      widget.list['content'];
-                                  ListCreationController
-                                          .to.editIsPublic?.value =
-                                      widget.list['is_public'] ?? false;
-
-                                  ListCreationController
-                                      .to.isNewListModalVisible.value = true;
-                                } else {
-                                  null;
-                                }
-                              },
+                              onPressed: () => editList(),
                               icon: Icon(
                                 Icons.edit_outlined,
                                 color: AppColors.bw100(
@@ -176,84 +174,8 @@ class _ListDetailsPageState extends State<ListDetailsPage> {
                                   showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: Text(
-                                          'Confirm delete',
-                                          style: TextStyle(
-                                            color: AppColors.bw100(
-                                                Theme.of(context).brightness),
-                                          ),
-                                        ),
-                                        content: Text(
-                                          'Are you sure you want to delete this list?',
-                                          style: TextStyle(
-                                            color: AppColors.bw100(
-                                                Theme.of(context).brightness),
-                                          ),
-                                        ),
-                                        actions: [
-                                          // Cancel Button
-                                          GestureDetector(
-                                            onTap: () {
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: Padding(
-                                              padding:
-                                                  EdgeInsets.only(right: 16),
-                                              child: Text(
-                                                'Cancel',
-                                                style: TextStyle(
-                                                  color: AppColors.bw100(
-                                                      Theme.of(context)
-                                                          .brightness),
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w400,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-
-                                          // Delete button
-                                          GestureDetector(
-                                            onTap: () async {
-                                              Navigator.of(context).pop();
-                                              ListsController.to.deleteList(
-                                                  context, widget.list['id']);
-                                              await Future.delayed(
-                                                  Duration(milliseconds: 100));
-                                              if (context.mounted) {
-                                                CustomSnackBar(context)
-                                                    .show('List deleted');
-                                              }
-                                              await Future.delayed(
-                                                  Duration(milliseconds: 500));
-                                              if (context.mounted) {
-                                                Navigator.pop(context);
-                                              }
-                                              ListsController
-                                                  .to.pagingController
-                                                  .refresh();
-                                              ListsController
-                                                  .to.publicPagingController
-                                                  .refresh();
-                                            },
-                                            child: Padding(
-                                              padding: EdgeInsets.all(0),
-                                              child: Text(
-                                                'Delete',
-                                                style: TextStyle(
-                                                  color:
-                                                      AppColors.dialogDeleteBtn(
-                                                          Theme.of(context)
-                                                              .brightness),
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500,
-                                                ),
-                                              ),
-                                            ),
-                                          )
-                                        ],
-                                      );
+                                      return DeleteListDetailDialog(
+                                          list: widget.list);
                                     },
                                   );
                                 } else {
@@ -303,15 +225,7 @@ class _ListDetailsPageState extends State<ListDetailsPage> {
                   ),
                 ),
                 SizedBox(height: 20),
-                if (widget.list['user_id'] != AuthService().getCurrentUserId())
-                  SelectableText(
-                    'Shared by: ${widget.list['email']?.split('@').first ?? 'Unknown'}',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: AppColors.bw100(Theme.of(context).brightness),
-                    ),
-                  ),
-                SizedBox(height: 10),
+
                 Row(
                   spacing: 8,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -334,6 +248,103 @@ class _ListDetailsPageState extends State<ListDetailsPage> {
                     ),
                   ],
                 ),
+
+                SizedBox(height: 10),
+
+                // User email and icon
+                if (widget.list['user_id'] != AuthService().getCurrentUserId())
+                  InkWell(
+                    onTap: () {
+                      showBottomSheet(
+                        context: context,
+                        constraints: BoxConstraints(
+                          minHeight: 800,
+                          maxHeight: 800,
+                        ),
+                        builder: (_) => Container(
+                          width: MediaQuery.of(context).size.width,
+                          child: Center(
+                            child: Text('Profile soon'),
+                          ),
+                        ),
+                      );
+                    },
+                    borderRadius: BorderRadius.circular(4),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      spacing: 4,
+                      children: [
+                        FutureBuilder<String>(
+                          future: AvatarController.to
+                              .fetchUserProfilePic(widget.list['user_id']),
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return ClipRRect(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(4),
+                                ),
+                                child: Image(
+                                  image: AssetImage('assets/avatar.png'),
+                                  width: 28,
+                                  height: 28,
+                                ),
+                              );
+                            } else if (snapshot.hasError) {
+                              return ClipRRect(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(4),
+                                ),
+                                child: Image(
+                                  image: AssetImage('assets/avatar.png'),
+                                  width: 28,
+                                  height: 28,
+                                ),
+                              );
+                            } else if (snapshot.hasData &&
+                                snapshot.data != null &&
+                                snapshot.data!.isNotEmpty) {
+                              return ClipRRect(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(4),
+                                ),
+                                child: Image.memory(
+                                  base64Decode(snapshot.data!),
+                                  width: 28,
+                                  height: 28,
+                                ),
+                              );
+                            } else {
+                              return ClipRRect(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(4),
+                                ),
+                                child: Image(
+                                  image: AssetImage('assets/avatar.png'),
+                                  width: 28,
+                                  height: 28,
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                        SizedBox(width: 4),
+                        Text(
+                          '${widget.list['email']?.split('@').first ?? 'No user'}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color:
+                                AppColors.bw100(Theme.of(context).brightness),
+                          ),
+                        ),
+                        SizedBox(width: 5),
+                      ],
+                    ),
+                  ),
               ],
             ),
           ),

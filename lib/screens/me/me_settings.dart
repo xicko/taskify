@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:taskify/auth/auth_service.dart';
 import 'package:taskify/controllers/auth_controller.dart';
+import 'package:taskify/controllers/avatar_controller.dart';
 import 'package:taskify/controllers/edit_user_controller.dart';
 import 'package:taskify/controllers/lists_controller.dart';
 import 'package:taskify/controllers/ui_controller.dart';
 import 'package:taskify/widgets/abouttaskify.dart';
 import 'package:taskify/screens/me/edit_user.dart';
 import 'package:taskify/theme/colors.dart';
+import 'package:taskify/widgets/dialogs/delete_all_list_dialog.dart';
+import 'package:taskify/widgets/dialogs/profile_picture_edit_dialog.dart';
 import 'package:taskify/widgets/snackbar.dart';
 
 class MeSettings extends StatefulWidget {
@@ -37,11 +41,26 @@ class MeSettingsState extends State<MeSettings> {
             spacing: 15,
             children: [
               SizedBox(height: screenHeight * 0.04),
-              ClipOval(
-                child: Image(
-                  image: AssetImage('assets/avatar.png'),
-                  height: 100,
-                  width: 100,
+              InkWell(
+                onTap: () => showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (_) => ProfilePictureEditDialog(),
+                ),
+                child: ClipOval(
+                  child: Obx(
+                    () => AvatarController.to.currentBase64.value.isNotEmpty
+                        ? Image.memory(
+                            AvatarController.to.currentPic(),
+                            height: 100,
+                            width: 100,
+                          )
+                        : Image(
+                            image: AssetImage('assets/avatar.png'),
+                            height: 100,
+                            width: 100,
+                          ),
+                  ),
                 ),
               ),
               Text(
@@ -142,68 +161,7 @@ class MeSettingsState extends State<MeSettings> {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Text(
-                        'Confirm delete',
-                        style: TextStyle(
-                          color: AppColors.bw100(Theme.of(context).brightness),
-                        ),
-                      ),
-                      content: Text(
-                        'Are you sure you want to delete all your lists? This action cannot be undone.',
-                        style: TextStyle(
-                          color: AppColors.bw100(Theme.of(context).brightness),
-                        ),
-                      ),
-                      actions: [
-                        // Cancel Button
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Padding(
-                            padding: EdgeInsets.only(right: 16),
-                            child: Text(
-                              'Cancel',
-                              style: TextStyle(
-                                color: AppColors.bw100(
-                                    Theme.of(context).brightness),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ),
-                        ),
-
-                        // Confirm delete button
-                        GestureDetector(
-                          onTap: () async {
-                            ListsController.to.deleteAllUserLists();
-                            Navigator.of(context).pop();
-
-                            await Future.delayed(Duration(milliseconds: 400));
-                            ListsController.to.pagingController.refresh();
-                            ListsController.to.publicPagingController.refresh();
-
-                            if (context.mounted) {
-                              CustomSnackBar(context).show('Deleted all lists');
-                            }
-                          },
-                          child: Padding(
-                            padding: EdgeInsets.all(0),
-                            child: Text(
-                              'Delete',
-                              style: TextStyle(
-                                color: AppColors.dialogDeleteBtn(
-                                    Theme.of(context).brightness),
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
+                    return DeleteAllListDialog();
                   },
                 );
               },

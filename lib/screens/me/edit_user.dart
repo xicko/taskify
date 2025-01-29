@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:taskify/auth/auth_service.dart';
+import 'package:taskify/controllers/avatar_controller.dart';
 import 'package:taskify/controllers/edit_user_controller.dart';
 import 'package:taskify/theme/colors.dart';
+import 'package:taskify/widgets/dialogs/profile_picture_edit_dialog.dart';
 import 'package:taskify/widgets/snackbar.dart';
 
 class EditUser extends StatefulWidget {
@@ -71,6 +73,47 @@ class _EditUserState extends State<EditUser> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
+                      SizedBox(height: 32),
+
+                      Row(
+                        spacing: 16,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(6),
+                            child: Obx(
+                              () => AvatarController
+                                      .to.currentBase64.value.isNotEmpty
+                                  ? Image.memory(
+                                      AvatarController.to.currentPic(),
+                                      height: 160,
+                                      width: 160,
+                                    )
+                                  : Image(
+                                      image: AssetImage('assets/avatar.png'),
+                                      height: 160,
+                                      width: 160,
+                                    ),
+                            ),
+                          ),
+                          IconButton(
+                            style: IconButton.styleFrom(
+                              backgroundColor: Colors.black12,
+                              minimumSize: Size(60, 60),
+                              maximumSize: Size(60, 60),
+                              iconSize: 30,
+                            ),
+                            onPressed: () => showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (_) => ProfilePictureEditDialog(),
+                            ),
+                            icon: Icon(
+                              Icons.add_photo_alternate_outlined,
+                            ),
+                          ),
+                        ],
+                      ),
+
                       SizedBox(height: 32),
 
                       // Change Email UI

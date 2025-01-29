@@ -79,13 +79,13 @@ class _BaseScreenState extends State<BaseScreen> {
                 ),
               ),
 
+              // List Scrollbars
               Positioned(
                 top: screenHeight / 2 - 200,
                 right: 0,
                 bottom: 0,
                 child: MyListScrollbar(),
               ),
-
               Positioned(
                 top: screenHeight / 2 - 200,
                 right: 0,

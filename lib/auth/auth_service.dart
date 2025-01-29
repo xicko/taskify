@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:taskify/controllers/avatar_controller.dart';
 import 'package:taskify/widgets/snackbar.dart';
 
 class AuthService {
@@ -16,6 +17,10 @@ class AuthService {
         email: email,
         password: password,
       );
+
+      // Fetching user pfp
+      await Future.delayed(Duration(milliseconds: 50));
+      await AvatarController.to.fetchProfilePic();
 
       // Return the response if no error occurred
       return res;
@@ -45,6 +50,10 @@ class AuthService {
         password: password,
       );
 
+      // Fetching user pfp
+      await Future.delayed(Duration(milliseconds: 50));
+      await AvatarController.to.fetchProfilePic();
+
       return res;
     } on AuthException catch (e) {
       // Handle AuthException errors specifically
@@ -66,6 +75,8 @@ class AuthService {
 
   Future<void> signOut() async {
     await supabase.auth.signOut();
+
+    AvatarController.to.clearPic();
   }
 
   String? getCurrentUserEmail() {

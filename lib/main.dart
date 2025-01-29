@@ -6,8 +6,10 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:taskify/auth/auth_gate.dart';
 import 'package:taskify/auth/auth_key.dart';
 import 'package:taskify/controllers/auth_controller.dart';
+import 'package:taskify/controllers/avatar_controller.dart';
 import 'package:taskify/controllers/base_controller.dart';
 import 'package:taskify/controllers/edit_user_controller.dart';
+import 'package:taskify/controllers/list_selection_controller.dart';
 import 'package:taskify/controllers/lists_controller.dart';
 import 'package:taskify/controllers/list_creation_controller.dart';
 import 'package:taskify/controllers/report_controller.dart';
@@ -32,11 +34,15 @@ void main() {
 
       // State Controllers
       Get.put<BaseController>(BaseController());
+
       Get.put<AuthController>(AuthController());
+      Get.put<EditUserController>(EditUserController());
+      Get.put<AvatarController>(AvatarController());
+
       Get.put<UIController>(UIController());
       Get.put<ListsController>(ListsController());
       Get.put<ListCreationController>(ListCreationController());
-      Get.put<EditUserController>(EditUserController());
+      Get.put<ListSelectionController>(ListSelectionController());
       Get.put<ReportController>(ReportController());
 
       // Screen orientation locked to portrait/vertical

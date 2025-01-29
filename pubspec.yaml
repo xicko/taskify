@@ -25,6 +25,9 @@ dependencies:
   share_plus: ^10.1.4
   flutter_keyboard_visibility: ^6.0.0
   flutter_slidable: ^4.0.0
+  flutter_svg: ^2.0.17
+  image_picker: ^1.1.2
+  image: ^4.5.2
 
 dev_dependencies:
   flutter_test:
@@ -37,6 +40,7 @@ flutter:
   assets:
   - assets/fonts/
   - assets/visuals/
+  - assets/svg/
   - assets/logo1500.png
   - assets/avatar.png
   - assets/logo1500white.png
