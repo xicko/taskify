@@ -221,7 +221,7 @@ class NewListModalState extends State<NewListModal> {
                                 child: TextField(
                                   controller: titleController,
                                   maxLines: 1,
-                                  maxLength: 50,
+                                  maxLength: 70,
                                   cursorColor: Colors.black,
                                   focusNode: _titleFocusNode,
                                   textInputAction: TextInputAction.next,

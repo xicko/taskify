@@ -26,6 +26,9 @@ ThemeData lightMode = ThemeData(
   progressIndicatorTheme: ProgressIndicatorThemeData(
     color: Color.fromARGB(255, 38, 38, 38),
   ),
+  appBarTheme: AppBarTheme(
+    surfaceTintColor: Colors.transparent,
+  ),
   navigationBarTheme: NavigationBarThemeData(
     elevation: 0,
     shadowColor: Colors.black,
@@ -83,6 +86,9 @@ ThemeData darkMode = ThemeData(
   ),
   progressIndicatorTheme: ProgressIndicatorThemeData(
     color: Color.fromARGB(255, 205, 205, 205),
+  ),
+  appBarTheme: AppBarTheme(
+    surfaceTintColor: Colors.transparent,
   ),
   navigationBarTheme: NavigationBarThemeData(
     elevation: 0,

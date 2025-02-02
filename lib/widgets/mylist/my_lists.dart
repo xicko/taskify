@@ -37,7 +37,7 @@ class MyLists extends StatelessWidget {
     // Unfocus (dismiss keyboard)
     FocusManager.instance.primaryFocus?.unfocus();
 
-    // Open page
+    // Open list detail page
     Navigator.push(
       context,
       PageRouteBuilder(

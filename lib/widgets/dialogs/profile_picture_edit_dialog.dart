@@ -121,6 +121,7 @@ class ProfilePictureEditDialog extends StatelessWidget {
         // Dialog Buttons
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Expanded(
               child: ElevatedButton(
@@ -168,7 +169,9 @@ class ProfilePictureEditDialog extends StatelessWidget {
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 16),
+                    padding: EdgeInsets.symmetric(
+                      vertical: 16,
+                    ),
                     minimumSize: Size(0, 0),
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     shape: RoundedRectangleBorder(

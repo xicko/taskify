@@ -47,8 +47,7 @@ class ListCreationController extends GetxController {
     } else {
       // Clear the modal upon open if user was previously editing another list
       if (editListId?.value != null && editListId!.value!.isNotEmpty) {
-        titleController.clear();
-        contentController.clear();
+        clearControllers();
         isPublic.value = false;
         clearEditData();
         debugPrint('Modal Cleared');
@@ -118,6 +117,11 @@ class ListCreationController extends GetxController {
     } catch (e) {
       debugPrint('$e');
     }
+  }
+
+  void clearControllers() {
+    titleController.clear();
+    contentController.clear();
   }
 
   void clearEditData() {

@@ -37,8 +37,10 @@ class AuthController extends GetxController {
       CustomSnackBar(context).show('Signed out');
     }
 
+    // Clear profile picture cache on signout
     AvatarController.to.clearPic();
 
+    // Close list selectionbar if visible
     ListSelectionController.to.closeSelectionBar();
   }
 }

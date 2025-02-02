@@ -114,6 +114,7 @@ class AvatarController extends GetxController {
     currentBase64.value = response?['base64'] ?? '';
   }
 
+  // Fetch pfp based on user's ID
   Future<String> fetchUserProfilePic(String userId) async {
     final supabase = Supabase.instance.client;
 

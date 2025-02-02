@@ -11,6 +11,7 @@ import 'package:taskify/controllers/list_creation_controller.dart';
 import 'package:taskify/controllers/ui_controller.dart';
 import 'package:taskify/theme/colors.dart';
 import 'package:taskify/widgets/dialogs/delete_list_detail_dialog.dart';
+import 'package:taskify/widgets/dialogs/user_profile_dialog.dart';
 import 'package:taskify/widgets/discoverlist/report_list.dart';
 import 'package:taskify/widgets/snackbar.dart';
 
@@ -36,8 +37,14 @@ class _ListDetailsPageState extends State<ListDetailsPage> {
   }
 
   // Edit List method
-  void editList() {
+  void editList() async {
     if (AuthService().getCurrentUserId().toString() == widget.list['user_id']) {
+      // Clear controllers before opening
+      ListCreationController.to.clearControllers();
+      ListCreationController.to.clearEditData();
+
+      // Set edit data
+      await Future.delayed(Duration(milliseconds: 20));
       ListCreationController.to.editListId?.value = widget.list['id'];
       ListCreationController.to.editTitle?.value = widget.list['title'];
       ListCreationController.to.editContent?.value = widget.list['content'];
@@ -200,31 +207,34 @@ class _ListDetailsPageState extends State<ListDetailsPage> {
 
           // List body
           body: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            padding: EdgeInsets.only(left: 24, right: 24, top: 0, bottom: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SelectableText(
-                  widget.list['title'] ?? 'No Title',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.bw100(Theme.of(context).brightness),
-                  ),
-                ),
-                SizedBox(height: 10),
                 Expanded(
                   child: SingleChildScrollView(
-                    child: SelectableText(
-                      widget.list['content'] ?? 'No Content Available',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: AppColors.bw100(Theme.of(context).brightness),
+                      child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SelectableText(
+                        widget.list['title'] ?? 'No Title',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.bw100(Theme.of(context).brightness),
+                        ),
                       ),
-                    ),
-                  ),
+                      SelectableText(
+                        widget.list['content'] ?? 'No Content Available',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: AppColors.bw100(Theme.of(context).brightness),
+                        ),
+                      ),
+                    ],
+                  )),
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 4),
 
                 Row(
                   spacing: 8,
@@ -255,18 +265,10 @@ class _ListDetailsPageState extends State<ListDetailsPage> {
                 if (widget.list['user_id'] != AuthService().getCurrentUserId())
                   InkWell(
                     onTap: () {
-                      showBottomSheet(
+                      showDialog(
+                        barrierDismissible: true,
                         context: context,
-                        constraints: BoxConstraints(
-                          minHeight: 800,
-                          maxHeight: 800,
-                        ),
-                        builder: (_) => Container(
-                          width: MediaQuery.of(context).size.width,
-                          child: Center(
-                            child: Text('Profile soon'),
-                          ),
-                        ),
+                        builder: (_) => UserProfileDialog(list: widget.list),
                       );
                     },
                     borderRadius: BorderRadius.circular(4),
