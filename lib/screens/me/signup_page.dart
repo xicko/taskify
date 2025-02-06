@@ -243,6 +243,14 @@ class SignupPageState extends State<SignupPage> {
                                 }
                                 return null;
                               },
+                              onFieldSubmitted: (_) {
+                                if (_emailController.text.isNotEmpty ||
+                                    _passwordController.text.isNotEmpty ||
+                                    _confirmPasswordController
+                                        .text.isNotEmpty) {
+                                  _signup();
+                                }
+                              },
                             ),
                             SizedBox(height: 20),
                             Column(

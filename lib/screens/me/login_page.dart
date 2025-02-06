@@ -184,6 +184,12 @@ class LoginPageState extends State<LoginPage> {
                                   ),
                                 ),
                               ),
+                              onFieldSubmitted: (_) {
+                                if (_emailController.text.isNotEmpty ||
+                                    _passwordController.text.isNotEmpty) {
+                                  _login();
+                                }
+                              },
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter a password';

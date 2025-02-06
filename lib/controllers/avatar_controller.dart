@@ -5,6 +5,7 @@ import 'dart:io' as io;
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -148,14 +149,42 @@ class AvatarController extends GetxController {
     }
   }
 
-  // Method to pick image from gallery
+  // Method to pick image from gallery and crop
   void pickImage() async {
     final ImagePicker picker = ImagePicker();
 
+    // Picked image
     final XFile? pickedImg =
         await picker.pickImage(source: ImageSource.gallery);
+    if (pickedImg == null) return;
 
-    processImage(pickedImg);
+    // Method to crop picked image to square
+    CroppedFile? croppedFile = await ImageCropper().cropImage(
+      sourcePath: pickedImg.path,
+      aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+      compressFormat: ImageCompressFormat.jpg,
+      compressQuality: 90,
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: 'Crop Image',
+          toolbarColor: Colors.black,
+          statusBarColor: Colors.black,
+          toolbarWidgetColor: Colors.white,
+          activeControlsWidgetColor: Color.fromARGB(255, 69, 128, 167),
+          lockAspectRatio: true,
+        ),
+        IOSUiSettings(
+          title: 'Crop Image',
+        ),
+      ],
+    );
+    if (croppedFile == null) return;
+
+    // Convert CroppedFile to XFile
+    XFile croppedXFile = XFile(croppedFile.path);
+
+    // Finally process the picked image
+    processImage(croppedXFile);
   }
 
   // Method to convert and store the raw image
