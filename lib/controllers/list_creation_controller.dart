@@ -1,3 +1,4 @@
+import 'package:fleather/fleather.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -11,7 +12,9 @@ class ListCreationController extends GetxController {
 
   // NewListModal input controllers
   final TextEditingController titleController = TextEditingController();
-  final TextEditingController contentController = TextEditingController();
+  // final TextEditingController contentController = TextEditingController();
+  FleatherController fleatherContentController = FleatherController();
+  RxBool isFleatherEmpty = false.obs;
 
   RxBool isNewListModalVisible = false.obs;
   RxBool isEditMode = false.obs; // Modal editmode
@@ -30,6 +33,11 @@ class ListCreationController extends GetxController {
     // Reactive listener for editmode
     ever(editListId!, (_) {
       isEditMode.value = editListId?.value != null;
+    });
+
+    fleatherContentController.addListener(() {
+      isFleatherEmpty.value =
+          fleatherContentController.plainTextEditingValue.text.length < 2;
     });
   }
 
@@ -121,7 +129,7 @@ class ListCreationController extends GetxController {
 
   void clearControllers() {
     titleController.clear();
-    contentController.clear();
+    fleatherContentController.clear();
   }
 
   void clearEditData() {
@@ -134,7 +142,7 @@ class ListCreationController extends GetxController {
   @override
   void onClose() {
     titleController.dispose();
-    contentController.dispose();
+    fleatherContentController.dispose();
 
     super.onClose();
   }

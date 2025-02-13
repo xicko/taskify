@@ -15,7 +15,7 @@ dependencies:
   flutter_launcher_icons: ^0.14.2
   infinite_scroll_pagination: ^4.1.0
   flutter_dotenv: ^5.2.1
-  intl: ^0.20.1
+  intl: ^0.19.0
   font_awesome_flutter: ^10.8.0
   path_provider: ^2.0.11
   json_serializable: ^6.1.4
@@ -30,6 +30,7 @@ dependencies:
   image: ^4.5.2
   flutter_native_splash: ^2.4.4
   image_cropper: ^9.0.0
+  fleather: ^1.20.1
 
 dev_dependencies:
   flutter_test:
@@ -49,6 +50,26 @@ flutter:
   - assets/logo1500black.png
 
   fonts:
+    - family: 'DM Mono'
+      fonts:
+        - asset: assets/fonts/DMMono-Light.ttf
+          weight: 300
+        - asset: assets/fonts/DMMono-LightItalic.ttf
+          weight: 300
+          style: italic
+
+        - asset: assets/fonts/DMMono-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/DMMono-Italic.ttf
+          weight: 400
+          style: italic
+
+        - asset: assets/fonts/DMMono-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/DMMono-MediumItalic.ttf
+          weight: 500
+          style: italic
+
     - family: 'DM Sans'
       fonts:
         - asset: assets/fonts/DMSans-Thin.ttf

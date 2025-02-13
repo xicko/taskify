@@ -10,7 +10,7 @@ import 'package:taskify/navs/discover_nav.dart';
 import 'package:taskify/navs/me_nav.dart';
 import 'package:taskify/widgets/discoverlist/discover_list_scrollbar.dart';
 import 'package:taskify/widgets/mylist/my_list_scrollbar.dart';
-import 'package:taskify/widgets/newlist_modal.dart';
+import 'package:taskify/screens/sub_screens/new_list.dart';
 import 'package:taskify/controllers/base_controller.dart';
 import 'package:taskify/navigationbar.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -73,7 +73,7 @@ class _BaseScreenState extends State<BaseScreen> {
                       right: 0,
                       curve: Curves.easeInOut,
                       duration: Duration(milliseconds: 400),
-                      child: NewListModal(),
+                      child: NewList(),
                     ),
                   ],
                 ),

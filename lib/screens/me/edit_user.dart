@@ -53,6 +53,14 @@ class _EditUserState extends State<EditUser> {
             AuthService().supabase.auth.refreshSession();
           },
         ),
+        title: Text(
+          'Account settings',
+          style: TextStyle(
+            fontSize: 22,
+            color: AppColors.bw100(Theme.of(context).brightness),
+            fontWeight: FontWeight.w500,
+          ),
+        ),
       ),
       backgroundColor: AppColors.listDetailBG(Theme.of(context).brightness),
       body: Center(
@@ -60,20 +68,11 @@ class _EditUserState extends State<EditUser> {
           padding: EdgeInsets.symmetric(horizontal: 36),
           child: Column(
             children: [
-              Text(
-                'Account settings',
-                style: TextStyle(
-                  fontSize: 22,
-                  color: AppColors.bw100(Theme.of(context).brightness),
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              SizedBox(height: 8),
               Expanded(
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      SizedBox(height: 32),
+                      SizedBox(height: 24),
 
                       Row(
                         spacing: 16,

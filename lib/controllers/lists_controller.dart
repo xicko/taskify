@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:fleather/fleather.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -97,6 +98,17 @@ class ListsController extends GetxController {
           ? listDiscoverScrollController.offset / maxScrollExtent
           : 0.0);
     });
+  }
+
+  @override
+  void onClose() {
+    pagingController.dispose();
+    publicPagingController.dispose();
+
+    listMyScrollController.dispose();
+    listDiscoverScrollController.dispose();
+
+    super.onClose();
   }
 
   // Delete a list method
@@ -359,14 +371,26 @@ class ListsController extends GetxController {
     }
   }
 
-  @override
-  void onClose() {
-    pagingController.dispose();
-    publicPagingController.dispose();
+  // Display raw delta as plain text
+  String extractPlainText(String rawText) {
+    try {
+      // Check if the string is a valid JSON list (Delta format)
+      final decoded = jsonDecode(rawText);
+      if (decoded is List) {
+        Delta delta = Delta.fromJson(decoded);
 
-    listMyScrollController.dispose();
-    listDiscoverScrollController.dispose();
-
-    super.onClose();
+        // Extract plain text from Delta
+        return delta
+            .toList()
+            .where((op) => op.key == 'insert') // Get only text insertions
+            .map((op) => op.value) // Extract the text
+            .join(""); // Combine into a single string
+      } else {
+        throw FormatException("Not a Delta JSON");
+      }
+    } catch (e) {
+      // If an error occurs, assume it's plain text and return as is
+      return rawText;
+    }
   }
 }

@@ -9,6 +9,7 @@ import 'package:taskify/controllers/auth_controller.dart';
 import 'package:taskify/controllers/avatar_controller.dart';
 import 'package:taskify/controllers/base_controller.dart';
 import 'package:taskify/controllers/edit_user_controller.dart';
+import 'package:taskify/controllers/list_detail_controller.dart';
 import 'package:taskify/controllers/list_selection_controller.dart';
 import 'package:taskify/controllers/lists_controller.dart';
 import 'package:taskify/controllers/list_creation_controller.dart';
@@ -43,6 +44,7 @@ void main() {
       Get.put<ListsController>(ListsController());
       Get.put<ListCreationController>(ListCreationController());
       Get.put<ListSelectionController>(ListSelectionController());
+      Get.put<ListDetailController>(ListDetailController());
       Get.put<ReportController>(ReportController());
 
       // Screen orientation locked to portrait/vertical

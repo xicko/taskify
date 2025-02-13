@@ -1,3 +1,4 @@
+import 'package:fleather/fleather.dart';
 import 'package:flutter/material.dart';
 
 ThemeData lightMode = ThemeData(
@@ -117,5 +118,241 @@ ThemeData darkMode = ThemeData(
         }
       },
     ),
+  ),
+);
+
+// Used in editor
+FleatherThemeData lightFleather = FleatherThemeData(
+  bold: TextStyle(
+    fontFamily: 'DM Sans',
+    color: Colors.black,
+    fontWeight: FontWeight.bold,
+  ),
+  italic: TextStyle(
+    fontFamily: 'DM Sans',
+    color: Colors.black,
+    fontStyle: FontStyle.italic,
+  ),
+  underline: TextStyle(
+    fontFamily: 'DM Sans',
+    color: Colors.black,
+    decoration: TextDecoration.underline,
+  ),
+  strikethrough: TextStyle(
+    fontFamily: 'DM Sans',
+    color: Colors.black,
+    decoration: TextDecoration.lineThrough,
+  ),
+  inlineCode: InlineCodeThemeData(
+    style: TextStyle(
+      fontFamily: 'DM Mono',
+      color: Colors.black,
+    ),
+    backgroundColor: Colors.grey[200],
+  ),
+  link: TextStyle(
+    fontFamily: 'DM Sans',
+    color: const Color.fromARGB(255, 14, 68, 112),
+    decoration: TextDecoration.underline,
+  ),
+  paragraph: TextBlockTheme(
+    style: TextStyle(
+      fontFamily: 'DM Sans',
+      color: Colors.black,
+      fontSize: 14,
+    ),
+    spacing: VerticalSpacing(),
+  ),
+  heading1: TextBlockTheme(
+    style: TextStyle(
+      fontFamily: 'DM Sans',
+      fontSize: 36,
+      color: Colors.black,
+    ),
+    spacing: VerticalSpacing(),
+  ),
+  heading2: TextBlockTheme(
+    style: TextStyle(
+      fontFamily: 'DM Sans',
+      fontSize: 30,
+      color: Colors.black,
+    ),
+    spacing: VerticalSpacing(),
+  ),
+  heading3: TextBlockTheme(
+    style: TextStyle(
+      fontFamily: 'DM Sans',
+      fontSize: 24,
+      color: Colors.black,
+    ),
+    spacing: VerticalSpacing(),
+  ),
+  heading4: TextBlockTheme(
+    style: TextStyle(
+      fontFamily: 'DM Sans',
+      fontSize: 20,
+      color: Colors.black,
+    ),
+    spacing: VerticalSpacing(),
+  ),
+  heading5: TextBlockTheme(
+    style: TextStyle(
+      fontFamily: 'DM Sans',
+      fontSize: 18,
+      color: Colors.black,
+    ),
+    spacing: VerticalSpacing(),
+  ),
+  heading6: TextBlockTheme(
+    style: TextStyle(
+      fontFamily: 'DM Sans',
+      fontSize: 16,
+      color: Colors.black,
+    ),
+    spacing: VerticalSpacing(),
+  ),
+  lists: TextBlockTheme(
+    style: TextStyle(
+      fontFamily: 'DM Sans',
+      color: Colors.black,
+    ),
+    spacing: VerticalSpacing(),
+  ),
+  quote: TextBlockTheme(
+      style: TextStyle(
+        fontFamily: 'DM Sans',
+        color: Colors.black,
+        fontStyle: FontStyle.italic,
+      ),
+      spacing: VerticalSpacing()),
+  code: TextBlockTheme(
+    style: TextStyle(
+      fontFamily: 'DM Mono',
+      color: Colors.black,
+    ),
+    spacing: VerticalSpacing(),
+  ),
+  horizontalRule: HorizontalRuleThemeData(
+    height: 3.0,
+    thickness: 3.0,
+    color: Colors.black,
+  ),
+);
+
+// Used in listDetailPage
+FleatherThemeData darkFleather = FleatherThemeData(
+  bold: TextStyle(
+    fontFamily: 'DM Sans',
+    color: Colors.white,
+    fontWeight: FontWeight.bold,
+  ),
+  italic: TextStyle(
+    fontFamily: 'DM Sans',
+    color: Colors.white,
+    fontStyle: FontStyle.italic,
+  ),
+  underline: TextStyle(
+    fontFamily: 'DM Sans',
+    color: Colors.white,
+    decoration: TextDecoration.underline,
+  ),
+  strikethrough: TextStyle(
+    fontFamily: 'DM Sans',
+    color: Colors.white,
+    decoration: TextDecoration.lineThrough,
+  ),
+  inlineCode: InlineCodeThemeData(
+    style: TextStyle(
+      fontFamily: 'DM Mono',
+      color: Colors.white,
+    ),
+    backgroundColor: Color.fromARGB(255, 33, 59, 76),
+  ),
+  link: TextStyle(
+    fontFamily: 'DM Sans',
+    color: const Color.fromARGB(255, 58, 139, 206),
+    decoration: TextDecoration.underline,
+  ),
+  paragraph: TextBlockTheme(
+    style: TextStyle(
+      fontFamily: 'DM Sans',
+      color: Colors.white,
+      fontSize: 14,
+    ),
+    spacing: VerticalSpacing(),
+  ),
+  heading1: TextBlockTheme(
+    style: TextStyle(
+      fontFamily: 'DM Sans',
+      fontSize: 36,
+      color: Colors.white,
+    ),
+    spacing: VerticalSpacing(),
+  ),
+  heading2: TextBlockTheme(
+    style: TextStyle(
+      fontFamily: 'DM Sans',
+      fontSize: 30,
+      color: Colors.white,
+    ),
+    spacing: VerticalSpacing(),
+  ),
+  heading3: TextBlockTheme(
+    style: TextStyle(
+      fontFamily: 'DM Sans',
+      fontSize: 24,
+      color: Colors.white,
+    ),
+    spacing: VerticalSpacing(),
+  ),
+  heading4: TextBlockTheme(
+    style: TextStyle(
+      fontFamily: 'DM Sans',
+      fontSize: 20,
+      color: Colors.white,
+    ),
+    spacing: VerticalSpacing(),
+  ),
+  heading5: TextBlockTheme(
+    style: TextStyle(
+      fontFamily: 'DM Sans',
+      fontSize: 18,
+      color: Colors.white,
+    ),
+    spacing: VerticalSpacing(),
+  ),
+  heading6: TextBlockTheme(
+    style: TextStyle(
+      fontFamily: 'DM Sans',
+      fontSize: 16,
+      color: Colors.white,
+    ),
+    spacing: VerticalSpacing(),
+  ),
+  lists: TextBlockTheme(
+    style: TextStyle(
+      fontFamily: 'DM Sans',
+      color: Colors.white,
+    ),
+    spacing: VerticalSpacing(),
+  ),
+  quote: TextBlockTheme(
+      style: TextStyle(
+        fontFamily: 'DM Sans',
+        color: Colors.white,
+        fontStyle: FontStyle.italic,
+      ),
+      spacing: VerticalSpacing()),
+  code: TextBlockTheme(
+    style: TextStyle(
+      fontFamily: 'DM Mono',
+      color: Colors.white,
+    ),
+    spacing: VerticalSpacing(),
+  ),
+  horizontalRule: HorizontalRuleThemeData(
+    height: 3.0,
+    thickness: 3.0,
+    color: Colors.white,
   ),
 );

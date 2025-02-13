@@ -12,7 +12,7 @@ import 'package:taskify/controllers/avatar_controller.dart';
 import 'package:taskify/controllers/lists_controller.dart';
 import 'package:taskify/controllers/list_creation_controller.dart';
 import 'package:taskify/controllers/ui_controller.dart';
-import 'package:taskify/screens/list_details_page.dart';
+import 'package:taskify/screens/sub_screens/list_details_page.dart';
 import 'package:taskify/widgets/discoverlist/report_list.dart';
 import 'package:taskify/widgets/pagedlistbuilders/first_page_error_indicator_builder.dart';
 import 'package:taskify/widgets/pagedlistbuilders/no_items_found_indicator_builder.dart';
@@ -78,6 +78,9 @@ class DiscoverLists extends StatelessWidget {
                   animateTransitions: true,
                   transitionDuration: Duration(milliseconds: 150),
                   itemBuilder: (context, item, index) {
+                    String content =
+                        ListsController.to.extractPlainText(item['content']);
+
                     // bool isFirst = index == 0;
                     bool isLast = index ==
                         ListsController
@@ -378,7 +381,7 @@ class DiscoverLists extends StatelessWidget {
 
                                     // List Content Text
                                     Text(
-                                      item['content'] ?? 'Error',
+                                      content,
                                       maxLines: 3,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
