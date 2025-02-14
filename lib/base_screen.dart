@@ -5,6 +5,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:taskify/controllers/list_creation_controller.dart';
+import 'package:taskify/controllers/lists_controller.dart';
+import 'package:taskify/controllers/ui_controller.dart';
 import 'package:taskify/navs/home_nav.dart';
 import 'package:taskify/navs/discover_nav.dart';
 import 'package:taskify/navs/me_nav.dart';
@@ -84,13 +86,24 @@ class _BaseScreenState extends State<BaseScreen> {
                 top: screenHeight / 2 - 200,
                 right: 0,
                 bottom: 0,
-                child: MyListScrollbar(),
+                child: Obx(
+                  () => Visibility(
+                    visible: UIController.to.listDetailPageOpen.value == false,
+                    child: MyListScrollbar(),
+                  ),
+                ),
               ),
               Positioned(
                 top: screenHeight / 2 - 200,
                 right: 0,
                 bottom: 0,
-                child: DiscoverListScrollbar(),
+                child: Obx(
+                  () => Visibility(
+                    visible: ListsController.to.listType.value == 1 &&
+                        UIController.to.listDetailPageOpen.value == false,
+                    child: DiscoverListScrollbar(),
+                  ),
+                ),
               ),
             ],
           ),

@@ -11,7 +11,6 @@ import 'package:taskify/screens/me/edit_user.dart';
 import 'package:taskify/theme/colors.dart';
 import 'package:taskify/widgets/dialogs/delete_all_list_dialog.dart';
 import 'package:taskify/widgets/dialogs/profile_picture_edit_dialog.dart';
-import 'package:taskify/widgets/snackbar.dart';
 
 class MeSettings extends StatefulWidget {
   const MeSettings({super.key});
@@ -21,6 +20,20 @@ class MeSettings extends StatefulWidget {
 }
 
 class MeSettingsState extends State<MeSettings> {
+  void _onLogout() async {
+    UIController.to.getSnackbar('Logging out', '', hideMessage: true);
+
+    // Delayed Log out
+    await Future.delayed(Duration(milliseconds: 1000));
+    if (context.mounted) {
+      AuthController.to.signOut();
+    }
+
+    // Refresh users list after slight delay
+    await Future.delayed(Duration(milliseconds: 100));
+    ListsController.to.pagingController.refresh();
+  }
+
   @override
   Widget build(BuildContext context) {
     // getting user's device screen height/width
@@ -126,7 +139,7 @@ class MeSettingsState extends State<MeSettings> {
                 var userId = AuthService().getCurrentUserId();
 
                 if (userId != null) {
-                  await ListsController.to.exportUserLists(context, 0);
+                  await ListsController.to.exportUserLists(0);
                 } else {
                   // Handle the case where no user is logged in
                   // CustomSnackBar(context).show('No user is logged in. Please log in to export lists.');
@@ -218,19 +231,7 @@ class MeSettingsState extends State<MeSettings> {
 
             // Log out button
             TextButton(
-              onPressed: () async {
-                CustomSnackBar(context).show('Logging out');
-
-                // Delayed Log out
-                await Future.delayed(Duration(milliseconds: 1000));
-                if (context.mounted) {
-                  AuthController.to.signOut(context);
-                }
-
-                // Refresh users list after slight delay
-                await Future.delayed(Duration(milliseconds: 100));
-                ListsController.to.pagingController.refresh();
-              },
+              onPressed: () => _onLogout(),
               style: TextButton.styleFrom(
                   foregroundColor:
                       AppColors.bw100(Theme.of(context).brightness),

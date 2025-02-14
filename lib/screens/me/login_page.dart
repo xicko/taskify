@@ -5,7 +5,6 @@ import 'package:taskify/controllers/base_controller.dart';
 import 'package:taskify/controllers/lists_controller.dart';
 import 'package:taskify/controllers/ui_controller.dart';
 import 'package:taskify/theme/colors.dart';
-import 'package:taskify/widgets/snackbar.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -30,12 +29,11 @@ class LoginPageState extends State<LoginPage> {
 
     if (email.isNotEmpty && password.isNotEmpty) {
       AuthService()
-          .signInWithEmailPassword(context, email, password)
+          .signInWithEmailPassword(email, password)
           .then((response) async {
         if (response.session != null) {
-          if (mounted) {
-            CustomSnackBar(context).show("Login successful!");
-          }
+          UIController.to
+              .getSnackbar('Login successful!', '', hideMessage: true);
 
           // hiding login modal if login successful(state)
           UIController.to.loginVisibility.value = false;
@@ -44,13 +42,10 @@ class LoginPageState extends State<LoginPage> {
           ListsController.to.pagingController.refresh();
           ListsController.to.publicPagingController.refresh();
         } else {
-          if (mounted) {
-            CustomSnackBar(context).show("Login failed. Check credentials.");
-          }
+          UIController.to.getSnackbar('Login failed.', 'Check credentials.');
         }
       }).catchError(
         (e) {
-          // CustomSnackBar(context).show("Error: $e");
           UIController.to.getSnackbar(
             'Error: $e',
             '',
@@ -59,7 +54,8 @@ class LoginPageState extends State<LoginPage> {
         },
       );
     } else {
-      CustomSnackBar(context).show('Please fill in all fields.');
+      UIController.to
+          .getSnackbar('Please fill in all fields.', '', hideMessage: true);
     }
 
     ListsController.to.pagingController.refresh();

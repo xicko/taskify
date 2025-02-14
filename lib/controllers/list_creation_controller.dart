@@ -5,7 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:taskify/auth/auth_service.dart';
 import 'package:taskify/controllers/auth_controller.dart';
 import 'package:taskify/controllers/base_controller.dart';
-import 'package:taskify/widgets/snackbar.dart';
+import 'package:taskify/controllers/ui_controller.dart';
 
 class ListCreationController extends GetxController {
   static ListCreationController get to => Get.find();
@@ -42,16 +42,14 @@ class ListCreationController extends GetxController {
   }
 
   // List Methods
-  void addNewList(BuildContext context) async {
+  void addNewList() async {
     // Prompt login/signup if not already authenticated
     if (AuthController.to.isLoggedIn.value == false) {
       // Open me screen login/signup if user isnt authenticated
       await Future.delayed(Duration(milliseconds: 300));
       BaseController.to.changePage(2);
 
-      if (context.mounted) {
-        CustomSnackBar(context).show('Not logged in');
-      }
+      UIController.to.getSnackbar('Not logged in', '', hideMessage: true);
     } else {
       // Clear the modal upon open if user was previously editing another list
       if (editListId?.value != null && editListId!.value!.isNotEmpty) {
@@ -69,8 +67,7 @@ class ListCreationController extends GetxController {
   }
 
   // Method to create a new list
-  Future<void> createList(
-      BuildContext context, String title, String content, bool isPublic) async {
+  Future<void> createList(String title, String content, bool isPublic) async {
     try {
       var userId = AuthService().getCurrentUserId();
       if (userId == null) {
@@ -89,17 +86,15 @@ class ListCreationController extends GetxController {
 
       isNewListModalVisible.value = false;
 
-      if (context.mounted) {
-        CustomSnackBar(context).show('List created!');
-      }
+      UIController.to.getSnackbar('List created!', '', hideMessage: true);
     } catch (e) {
       debugPrint('$e');
     }
   }
 
   // Update list method
-  Future<void> updateList(BuildContext context, String title, String content,
-      bool isPublic, String listId) async {
+  Future<void> updateList(
+      String title, String content, bool isPublic, String listId) async {
     try {
       var userId = AuthService().getCurrentUserId();
       if (userId == null) {
@@ -119,9 +114,7 @@ class ListCreationController extends GetxController {
 
       isNewListModalVisible.value = false;
 
-      if (context.mounted) {
-        CustomSnackBar(context).show('List updated!');
-      }
+      UIController.to.getSnackbar('List updated!', '', hideMessage: true);
     } catch (e) {
       debugPrint('$e');
     }

@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:taskify/controllers/list_creation_controller.dart';
 import 'package:taskify/controllers/lists_controller.dart';
 import 'package:taskify/controllers/ui_controller.dart';
-import 'package:taskify/widgets/snackbar.dart';
 
 class SearchBarDiscoverList extends StatelessWidget {
   const SearchBarDiscoverList({super.key});
@@ -38,7 +37,8 @@ class SearchBarDiscoverList extends StatelessWidget {
                         // only search if input is not empty
                         if (ListsController
                             .to.searchMyController.text.isNotEmpty) {
-                          CustomSnackBar(context).show('Searching...');
+                          UIController.to.getSnackbar('Searching...', '',
+                              hideMessage: true);
                           ListsController.to.searchMyLists();
                         }
                       },
@@ -126,12 +126,10 @@ class SearchBarDiscoverList extends StatelessWidget {
                       // Button only active if input is not empty
                       if (ListsController
                           .to.searchDiscoverController.text.isNotEmpty) {
-                        CustomSnackBar(context).show('Searching...');
+                        UIController.to
+                            .getSnackbar('Searching...', '', hideMessage: true);
                         ListsController.to.searchDiscoverLists();
                       }
-
-                      // Dismiss textfields focus
-                      FocusManager.instance.primaryFocus?.unfocus();
                     },
                     child: Row(
                       spacing: 4,

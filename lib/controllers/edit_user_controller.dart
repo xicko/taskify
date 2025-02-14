@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:taskify/auth/auth_service.dart';
-import 'package:taskify/widgets/snackbar.dart';
+import 'package:taskify/controllers/ui_controller.dart';
 
 class EditUserController extends GetxController {
   static EditUserController get to => Get.find();
@@ -26,12 +26,13 @@ class EditUserController extends GetxController {
     debugPrint(user.toString());
   }
 
-  Future<void> updateEmail(BuildContext context, String newEmail) async {
+  Future<void> updateEmail(String newEmail) async {
     emailUpdateSent.value = false;
 
     // Only update email if email is changed in the textfield input
     if (emailController.text == AuthService().getCurrentUserEmail()) {
-      CustomSnackBar(context).show('New email cannot be same as old email');
+      UIController.to.getSnackbar('New email cannot be same as old email', '',
+          hideMessage: true);
     } else {
       try {
         final session = AuthService().supabase.auth.currentSession;
@@ -49,9 +50,7 @@ class EditUserController extends GetxController {
         emailUpdateSent.value = true;
       } catch (e) {
         debugPrint('Error updating mail $e');
-        if (context.mounted) {
-          CustomSnackBar(context).show('Error: $e');
-        }
+        UIController.to.getSnackbar('Error: $e', '', hideMessage: true);
         emailUpdateSent.value = false;
       }
     }
@@ -82,9 +81,7 @@ class EditUserController extends GetxController {
       passwordUpdatedText.value = true;
     } catch (e) {
       debugPrint('Error updating password $e');
-      if (context.mounted) {
-        CustomSnackBar(context).show('Error: $e');
-      }
+      UIController.to.getSnackbar('Error: $e', '', hideMessage: true);
       passwordUpdatedText.value = false;
     }
   }

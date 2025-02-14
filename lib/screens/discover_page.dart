@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:taskify/controllers/lists_controller.dart';
+import 'package:taskify/widgets/discoverlist/carousel_lists_view.dart';
 import 'package:taskify/widgets/discoverlist/discover_buttons.dart';
 import 'package:taskify/widgets/discoverlist/searchbar_discoverlist.dart';
 import 'package:taskify/widgets/logo_and_title.dart';
@@ -70,7 +72,17 @@ class DiscoverPageState extends State<DiscoverPage>
                       SearchBarDiscoverList(),
 
                       // Public Lists
-                      DiscoverLists(availableHeight: availableHeight),
+                      Obx(
+                        () => Column(
+                          children: [
+                            if (ListsController.to.listType.value == 1)
+                              DiscoverLists(availableHeight: availableHeight),
+                            if (ListsController.to.listType.value == 0)
+                              CarouselListsView(
+                                  availableHeight: availableHeight),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),

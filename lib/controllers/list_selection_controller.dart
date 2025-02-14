@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:taskify/auth/auth_service.dart';
 import 'package:taskify/controllers/lists_controller.dart';
-import 'package:taskify/widgets/snackbar.dart';
+import 'package:taskify/controllers/ui_controller.dart';
 
 class ListSelectionController extends GetxController {
   static ListSelectionController get to => Get.find();
@@ -106,8 +106,8 @@ class ListSelectionController extends GetxController {
   }
 
   // Method to delete only selected lists
-  Future<void> deleteSelectedLists(BuildContext context) async {
-    CustomSnackBar(context).show('Deleting lists..');
+  Future<void> deleteSelectedLists() async {
+    UIController.to.getSnackbar('Deleting lists..', '', hideMessage: true);
 
     await Future.delayed(Duration(milliseconds: 200));
     await Supabase.instance.client
@@ -123,8 +123,8 @@ class ListSelectionController extends GetxController {
   }
 
   // Method to delete only selected lists
-  Future<void> visibilitySelectedLists(BuildContext context) async {
-    CustomSnackBar(context).show('Changing visibility..');
+  Future<void> visibilitySelectedLists() async {
+    UIController.to.getSnackbar('Changing visibility..', '', hideMessage: true);
 
     await Future.delayed(Duration(milliseconds: 200));
     await Supabase.instance.client

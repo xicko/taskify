@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
@@ -16,12 +15,44 @@ import 'package:taskify/screens/sub_screens/list_details_page.dart';
 import 'package:taskify/widgets/discoverlist/report_list.dart';
 import 'package:taskify/widgets/pagedlistbuilders/first_page_error_indicator_builder.dart';
 import 'package:taskify/widgets/pagedlistbuilders/no_items_found_indicator_builder.dart';
-import 'package:taskify/widgets/snackbar.dart';
 
 class DiscoverLists extends StatelessWidget {
-  final dynamic availableHeight;
+  final double availableHeight;
 
   const DiscoverLists({super.key, required this.availableHeight});
+
+  void onListTap(BuildContext context, Map<String, dynamic> item) {
+    UIController.to.listDetailPageOpen.value = true;
+    debugPrint(UIController.to.listDetailPageOpen.value.toString());
+
+    // Unfocus (dismiss keyboard)
+    FocusManager.instance.primaryFocus?.unfocus();
+
+    // Open page
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) {
+          return ListDetailsPage(list: item);
+        },
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          // Animation beginning and ending curve
+          const begin = Offset(0, 1);
+          const end = Offset.zero;
+          const curve = Curves.easeInOutQuad;
+
+          var tween =
+              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          var offsetAnimation = animation.drive(tween);
+
+          return SlideTransition(
+            position: offsetAnimation,
+            child: child,
+          );
+        },
+      ),
+    );
+  }
 
   Future<void> _pullToRefresh() async {
     ListsController.to.publicPagingController.refresh();
@@ -90,41 +121,7 @@ class DiscoverLists extends StatelessWidget {
                     return Padding(
                       padding: EdgeInsets.symmetric(vertical: 1),
                       child: GestureDetector(
-                        onTap: () {
-                          UIController.to.listDetailPageOpen.value = true;
-                          debugPrint(UIController.to.listDetailPageOpen.value
-                              .toString());
-
-                          // Unfocus (dismiss keyboard)
-                          FocusManager.instance.primaryFocus?.unfocus();
-
-                          // Open page
-                          Navigator.push(
-                            context,
-                            PageRouteBuilder(
-                              pageBuilder:
-                                  (context, animation, secondaryAnimation) {
-                                return ListDetailsPage(list: item);
-                              },
-                              transitionsBuilder: (context, animation,
-                                  secondaryAnimation, child) {
-                                // Animation beginning and ending curve
-                                const begin = Offset(0, 1);
-                                const end = Offset.zero;
-                                const curve = Curves.easeInOutQuad;
-
-                                var tween = Tween(begin: begin, end: end)
-                                    .chain(CurveTween(curve: curve));
-                                var offsetAnimation = animation.drive(tween);
-
-                                return SlideTransition(
-                                  position: offsetAnimation,
-                                  child: child,
-                                );
-                              },
-                            ),
-                          );
-                        },
+                        onTap: () => onListTap(context, item),
                         child: ClipRRect(
                           borderRadius: BorderRadius.only(
                             bottomLeft:
@@ -184,8 +181,9 @@ class DiscoverLists extends StatelessWidget {
                                         }
                                       else
                                         {
-                                          CustomSnackBar(context)
-                                              .show('Not logged in.')
+                                          UIController.to.getSnackbar(
+                                              'Not logged in.', 'message',
+                                              hideMessage: true)
                                         }
                                     },
                                     backgroundColor:

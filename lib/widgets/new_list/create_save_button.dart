@@ -1,10 +1,9 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:taskify/constants/forbidden_words.dart';
 import 'package:taskify/controllers/list_creation_controller.dart';
 import 'package:taskify/controllers/lists_controller.dart';
-import 'package:taskify/widgets/snackbar.dart';
+import 'package:taskify/controllers/ui_controller.dart';
 
 class CreateSaveButton extends StatefulWidget {
   const CreateSaveButton({super.key});
@@ -31,21 +30,22 @@ class _CreateSaveButtonState extends State<CreateSaveButton> {
     }
 
     if (title.isEmpty || content.isEmpty) {
-      CustomSnackBar(context).show('List cannot be empty');
+      UIController.to
+          .getSnackbar('List cannot be empty', '', hideMessage: true);
     } else if (ListCreationController.to.isPublic.value &&
         // If ispublic toggle is true, check for forbidden words
         (containsForbiddenWords(title) || containsForbiddenWords(content))) {
-      CustomSnackBar(context)
-          .show('Inappropriate language is not allowed in public lists.');
+      UIController.to.getSnackbar(
+          'Inappropriate language is not allowed in public lists.', '',
+          hideMessage: true);
     } else {
       if (ListCreationController.to.isEditMode.value == false) {
         // Creation
         ListCreationController.to.createList(
-            context, title, content, ListCreationController.to.isPublic.value);
+            title, content, ListCreationController.to.isPublic.value);
       } else {
         // Editing
         ListCreationController.to.updateList(
-          context,
           title,
           content,
           ListCreationController.to.isPublic.value,

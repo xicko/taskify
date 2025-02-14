@@ -1,8 +1,8 @@
 // Delete single list confirmation dialog - list_details_page.dart
 import 'package:flutter/material.dart';
 import 'package:taskify/controllers/lists_controller.dart';
+import 'package:taskify/controllers/ui_controller.dart';
 import 'package:taskify/theme/colors.dart';
-import 'package:taskify/widgets/snackbar.dart';
 
 class DeleteListDetailDialog extends StatelessWidget {
   final Map<String, dynamic> list;
@@ -11,11 +11,9 @@ class DeleteListDetailDialog extends StatelessWidget {
 
   void _onDelete(BuildContext context) async {
     Navigator.of(context).pop();
-    ListsController.to.deleteList(context, list['id']);
+    ListsController.to.deleteList(list['id']);
     await Future.delayed(Duration(milliseconds: 100));
-    if (context.mounted) {
-      CustomSnackBar(context).show('List deleted');
-    }
+    UIController.to.getSnackbar('List deleted', '', hideMessage: true);
     await Future.delayed(Duration(milliseconds: 500));
     if (context.mounted) {
       Navigator.pop(context);

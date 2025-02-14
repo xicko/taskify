@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:taskify/controllers/avatar_controller.dart';
-import 'package:taskify/widgets/snackbar.dart';
+import 'package:taskify/controllers/ui_controller.dart';
 
 class AuthService {
   final SupabaseClient supabase = Supabase.instance.client;
 
   Future<AuthResponse> signInWithEmailPassword(
-    BuildContext context,
     String email,
     String password,
   ) async {
@@ -27,23 +26,21 @@ class AuthService {
     } on AuthException catch (e) {
       // Handle specific AuthException errors
       debugPrint('AuthException: $e');
-      if (context.mounted) {
-        CustomSnackBar(context).show('Login error occurred. Please try again.');
-      }
+      UIController.to.getSnackbar('Login error occurred.', 'Please try again.');
+
       rethrow;
     } catch (e) {
       // Handle any other general exceptions
       debugPrint('Error: $e');
-      if (context.mounted) {
-        CustomSnackBar(context)
-            .show('An unexpected error occurred. Please try again.');
-      }
+      UIController.to
+          .getSnackbar('An unexpected error occurred.', 'Please try again.');
+
       rethrow;
     }
   }
 
   Future<AuthResponse?> signUpWithEmailPassword(
-      BuildContext context, String email, String password) async {
+      String email, String password) async {
     try {
       final AuthResponse res = await supabase.auth.signUp(
         email: email,
@@ -58,17 +55,13 @@ class AuthService {
     } on AuthException catch (e) {
       // Handle AuthException errors specifically
       debugPrint('AuthException: $e');
-      if (context.mounted) {
-        CustomSnackBar(context)
-            .show('Sign-up error occurred. Please try again.');
-      }
+      UIController.to
+          .getSnackbar('Sign-up error occurred.', 'Please try again.');
     } catch (e) {
       // Handle other types of exceptions
       debugPrint('Error: $e');
-      if (context.mounted) {
-        CustomSnackBar(context)
-            .show('An unexpected error occurred. Please try again.');
-      }
+      UIController.to
+          .getSnackbar('An unexpected error occurred.', 'Please try again.');
     }
     return null;
   }

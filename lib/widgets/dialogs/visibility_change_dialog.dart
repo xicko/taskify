@@ -103,7 +103,7 @@ class VisibilityChangeDialog extends StatelessWidget {
             Expanded(
               child: ElevatedButton(
                 onPressed: () {
-                  ListSelectionController.to.visibilitySelectedLists(context);
+                  ListSelectionController.to.visibilitySelectedLists();
                   Navigator.of(context).pop();
                 },
                 style: ElevatedButton.styleFrom(

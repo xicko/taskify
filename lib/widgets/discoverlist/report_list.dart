@@ -4,8 +4,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:taskify/auth/auth_service.dart';
 import 'package:taskify/controllers/auth_controller.dart';
 import 'package:taskify/controllers/report_controller.dart';
+import 'package:taskify/controllers/ui_controller.dart';
 import 'package:taskify/theme/colors.dart';
-import 'package:taskify/widgets/snackbar.dart';
 
 class ReportList extends StatefulWidget {
   final String list;
@@ -55,19 +55,16 @@ class _ReportListState extends State<ReportList> {
 
         if (mounted) {
           Navigator.pop(context);
-
-          CustomSnackBar(context).show(
-            'Your report has been submitted and will be reviewed.',
-            duration: 3000,
-          );
         }
+        UIController.to.getSnackbar(
+            'Your report has been submitted and will be reviewed.', '',
+            hideMessage: true, duration: Duration(seconds: 3));
 
         _clear();
       } else {
-        if (mounted) {
-          CustomSnackBar(context)
-              .show('Please provide a valid reason or select a category.');
-        }
+        UIController.to.getSnackbar(
+            'Please provide a valid reason or select a category.', '',
+            hideMessage: true);
       }
     }
   }

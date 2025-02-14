@@ -61,7 +61,7 @@ class DeleteSelectedListsDialog extends StatelessWidget {
             Expanded(
               child: ElevatedButton(
                 onPressed: () {
-                  ListSelectionController.to.deleteSelectedLists(context);
+                  ListSelectionController.to.deleteSelectedLists();
                   Navigator.of(context).pop();
                 },
                 style: ElevatedButton.styleFrom(

@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:taskify/widgets/snackbar.dart';
+import 'package:taskify/controllers/ui_controller.dart';
 
 class LoginForm extends StatefulWidget {
   final VoidCallback onCancel;
@@ -160,8 +160,9 @@ class LoginFormState extends State<LoginForm> {
                           if (email.isNotEmpty && password.isNotEmpty) {
                             widget.onLogin(email, password);
                           } else {
-                            CustomSnackBar(context)
-                                .show('Please fill in all fields.');
+                            UIController.to.getSnackbar(
+                                'Please fill in all fields.', '',
+                                hideMessage: true);
                           }
                         },
                         style: ElevatedButton.styleFrom(

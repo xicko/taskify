@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:taskify/controllers/avatar_controller.dart';
+import 'package:taskify/controllers/ui_controller.dart';
 import 'package:taskify/theme/colors.dart';
-import 'package:taskify/widgets/snackbar.dart';
 
 class ProfilePictureEditDialog extends StatelessWidget {
   const ProfilePictureEditDialog({super.key});
@@ -18,8 +18,9 @@ class ProfilePictureEditDialog extends StatelessWidget {
     AvatarController.to.fetchProfilePic();
     if (context.mounted) {
       Navigator.pop(context);
-      CustomSnackBar(context).show('Profile picture uploaded');
     }
+    UIController.to
+        .getSnackbar('Profile picture uploaded', '', hideMessage: true);
   }
 
   // Remove current pic btn
@@ -27,8 +28,8 @@ class ProfilePictureEditDialog extends StatelessWidget {
     await AvatarController.to.deleteProfilePic();
     if (context.mounted) {
       Navigator.pop(context);
-      CustomSnackBar(context).show('Picture removed');
     }
+    UIController.to.getSnackbar('Picture removed', '', hideMessage: true);
     AvatarController.to.newBase64.value = '';
   }
 

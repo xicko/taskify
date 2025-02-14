@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:taskify/controllers/lists_controller.dart';
 import 'package:taskify/controllers/list_creation_controller.dart';
 
@@ -77,7 +78,7 @@ class _DiscoverButtonsState extends State<DiscoverButtons> {
 
         ElevatedButton(
           onPressed: () {
-            ListCreationController.to.addNewList(context);
+            ListCreationController.to.addNewList();
           },
           style: ButtonStyle(
             padding: WidgetStateProperty.all(
@@ -116,6 +117,43 @@ class _DiscoverButtonsState extends State<DiscoverButtons> {
                 color: Colors.black87,
               ),
             ],
+          ),
+        ),
+
+        IconButton(
+          onPressed: () {
+            if (ListsController.to.listType.value == 1) {
+              ListsController.to.listType.value = 0;
+            } else if (ListsController.to.listType.value == 0) {
+              ListsController.to.listType.value = 1;
+            }
+          },
+          style: ButtonStyle(
+            padding: WidgetStateProperty.all(EdgeInsets.zero),
+            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            elevation: WidgetStateProperty.all(3),
+            shadowColor: WidgetStateProperty.all(Colors.black),
+            foregroundColor: WidgetStateProperty.all(Colors.black),
+            shape: WidgetStateProperty.all(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(6),
+                ),
+              ),
+            ),
+            backgroundColor: WidgetStateProperty.all(Colors.white),
+            overlayColor: WidgetStateProperty.all(
+              Color.fromARGB(255, 196, 231, 255),
+            ),
+          ),
+          icon: Obx(
+            () => Icon(
+              ListsController.to.listType.value == 0
+                  ? Icons.view_carousel
+                  : Icons.view_carousel_outlined,
+              size: 22,
+              color: Colors.black87,
+            ),
           ),
         ),
       ],

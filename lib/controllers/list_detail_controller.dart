@@ -19,7 +19,7 @@ class ListDetailController extends GetxController {
 
   // Method to load the list, use at widget mount initState
   Future<ParchmentDocument> loadDocument(String content) async {
-    final list = content ?? 'No Content Available';
+    final list = content;
 
     // Try to parse JSON safely
     try {

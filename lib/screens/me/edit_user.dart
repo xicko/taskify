@@ -207,8 +207,7 @@ class _EditUserState extends State<EditUser> {
                             final newEmail =
                                 EditUserController.to.emailController.text;
                             if (newEmail.isNotEmpty) {
-                              EditUserController.to
-                                  .updateEmail(context, newEmail);
+                              EditUserController.to.updateEmail(newEmail);
                             }
                           },
                           style: ElevatedButton.styleFrom(

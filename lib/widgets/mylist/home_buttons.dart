@@ -86,7 +86,7 @@ class _HomeButtonsState extends State<HomeButtons> {
         ElevatedButton(
           onPressed: () async {
             ListSelectionController.to.closeSelectionBar();
-            ListCreationController.to.addNewList(context);
+            ListCreationController.to.addNewList();
           },
           style: ButtonStyle(
             padding: WidgetStateProperty.all(

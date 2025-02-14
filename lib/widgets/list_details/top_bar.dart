@@ -8,7 +8,6 @@ import 'package:taskify/controllers/ui_controller.dart';
 import 'package:taskify/theme/colors.dart';
 import 'package:taskify/widgets/dialogs/delete_list_detail_dialog.dart';
 import 'package:taskify/widgets/discoverlist/report_list.dart';
-import 'package:taskify/widgets/snackbar.dart';
 
 class TopBar extends StatefulWidget {
   final Map<String, dynamic> list;
@@ -96,7 +95,8 @@ class _TopBarState extends State<TopBar> {
                             builder: (_) => ReportList(list: widget.list['id']),
                           );
                         } else {
-                          CustomSnackBar(context).show('Not logged in.');
+                          UIController.to.getSnackbar('Not logged in.', '',
+                              hideMessage: true);
                         }
                       },
                       icon: Icon(

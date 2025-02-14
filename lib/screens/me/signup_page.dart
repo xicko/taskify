@@ -5,7 +5,6 @@ import 'package:taskify/controllers/base_controller.dart';
 import 'package:taskify/controllers/lists_controller.dart';
 import 'package:taskify/controllers/ui_controller.dart';
 import 'package:taskify/theme/colors.dart';
-import 'package:taskify/widgets/snackbar.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -33,37 +32,33 @@ class SignupPageState extends State<SignupPage> {
     final confirmPassword = _confirmPasswordController.text.trim();
 
     if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
-      CustomSnackBar(context).show('Please fill all fields.');
-    }
-
-    // allows signup if both password fields match
-    if (password == confirmPassword) {
-      AuthService().signUpWithEmailPassword(context, email, password).then(
-        (response) {
-          if (response?.session != null) {
-            if (mounted) {
-              CustomSnackBar(context).show("Sign up successful!");
-            }
-
-            // hiding signup modal if signup successful(state)
-            UIController.to.signupVisibility.value = false;
-          } else {
-            if (mounted) {
-              CustomSnackBar(context).show(
-                "Sign up failed. Check credentials.",
-              );
-            }
-          }
-        },
-      ).catchError(
-        (e) {
-          if (mounted) {
-            CustomSnackBar(context).show("Error: $e");
-          }
-        },
-      );
+      UIController.to
+          .getSnackbar('Please fill all fields.', '', hideMessage: true);
     } else {
-      CustomSnackBar(context).show("Passwords do not match. Please try again.");
+      // allows signup if both password fields match
+      if (password == confirmPassword) {
+        AuthService().signUpWithEmailPassword(email, password).then(
+          (response) {
+            if (response?.session != null) {
+              UIController.to
+                  .getSnackbar('Sign up successful!', '', hideMessage: true);
+
+              // hiding signup modal if signup successful(state)
+              UIController.to.signupVisibility.value = false;
+            } else {
+              UIController.to
+                  .getSnackbar('Sign up failed.', 'Check credentials.');
+            }
+          },
+        ).catchError(
+          (e) {
+            UIController.to.getSnackbar('Error: $e', '', hideMessage: true);
+          },
+        );
+      } else {
+        UIController.to
+            .getSnackbar('Passwords do not match.', 'Please try again.');
+      }
     }
 
     await Future.delayed(Duration(milliseconds: 100));

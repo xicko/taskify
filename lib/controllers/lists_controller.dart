@@ -11,7 +11,6 @@ import 'package:taskify/auth/auth_service.dart';
 import 'package:taskify/controllers/list_creation_controller.dart';
 import 'package:taskify/controllers/list_selection_controller.dart';
 import 'package:taskify/controllers/ui_controller.dart';
-import 'package:taskify/widgets/snackbar.dart';
 
 class ListsController extends GetxController {
   static ListsController get to => Get.find();
@@ -31,6 +30,13 @@ class ListsController extends GetxController {
       PagingController(firstPageKey: 0);
   final PagingController<int, Map<String, dynamic>> publicPagingController =
       PagingController(firstPageKey: 0);
+
+  // Carousel list
+  final PageController pageController = PageController();
+  RxInt pageViewIndex = 0.obs;
+
+  // Track List Type, 1 for vertical list, 0 for horizontal pageview
+  RxInt listType = 0.obs;
 
   // MyList Scrollbar
   final ScrollController listMyScrollController = ScrollController();
@@ -112,7 +118,7 @@ class ListsController extends GetxController {
   }
 
   // Delete a list method
-  Future<void> deleteList(BuildContext context, String listId) async {
+  Future<void> deleteList(String listId) async {
     try {
       var userId = AuthService().getCurrentUserId();
       if (userId == null) {
@@ -203,6 +209,8 @@ class ListsController extends GetxController {
         final List<Map<String, dynamic>> fetchedLists =
             List<Map<String, dynamic>>.from(response);
 
+        //pageList.value = fetchedLists;
+
         if (fetchedLists.length < pageSize) {
           pagingController.appendLastPage(fetchedLists);
         } else {
@@ -221,6 +229,8 @@ class ListsController extends GetxController {
 
         final List<Map<String, dynamic>> fetchedLists =
             List<Map<String, dynamic>>.from(response);
+
+        //pageList.value = fetchedLists;
 
         if (fetchedLists.length < pageSize) {
           pagingController.appendLastPage(fetchedLists);
@@ -241,7 +251,7 @@ class ListsController extends GetxController {
   }
 
   // Method to export users lists to json and save locally
-  Future<void> exportUserLists(BuildContext context, int pageKey) async {
+  Future<void> exportUserLists(int pageKey) async {
     try {
       // If need to export right from the current data in pagingController use:
       // List<Map<String, dynamic>> lists = pagingController.itemList ?? [];
@@ -280,7 +290,6 @@ class ListsController extends GetxController {
         UIController.to.getSnackbar(
           'No lists to export',
           'Create a list to export',
-          shadows: false,
         );
       }
 
@@ -297,19 +306,18 @@ class ListsController extends GetxController {
         UIController.to.getSnackbar(
           'Export successful',
           'Lists exported to "$path"',
-          shadows: false,
           duration: Duration(seconds: 8),
         );
         debugPrint('Lists exported to "$path"');
       }
     } catch (e) {
       debugPrint('Error exporting user lists: $e');
-      if (context.mounted) {
-        CustomSnackBar(context).show(
-          'Unable to save lists, please try again',
-          duration: 1500,
-        );
-      }
+      UIController.to.getSnackbar(
+        'Unable to save lists, please try again',
+        '',
+        hideMessage: true,
+        duration: Duration(milliseconds: 1500),
+      );
     }
   }
 

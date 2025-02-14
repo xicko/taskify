@@ -1,8 +1,8 @@
 // Delete all user lists confirmation dialog - me_settings.dart
 import 'package:flutter/material.dart';
 import 'package:taskify/controllers/lists_controller.dart';
+import 'package:taskify/controllers/ui_controller.dart';
 import 'package:taskify/theme/colors.dart';
-import 'package:taskify/widgets/snackbar.dart';
 
 class DeleteAllListDialog extends StatelessWidget {
   const DeleteAllListDialog({super.key});
@@ -15,9 +15,7 @@ class DeleteAllListDialog extends StatelessWidget {
     ListsController.to.pagingController.refresh();
     ListsController.to.publicPagingController.refresh();
 
-    if (context.mounted) {
-      CustomSnackBar(context).show('Deleted all lists');
-    }
+    UIController.to.getSnackbar('Deleted all lists', '', hideMessage: true);
   }
 
   @override

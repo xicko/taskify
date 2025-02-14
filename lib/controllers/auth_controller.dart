@@ -1,10 +1,9 @@
 import 'dart:async';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:taskify/controllers/avatar_controller.dart';
 import 'package:taskify/controllers/list_selection_controller.dart';
-import 'package:taskify/widgets/snackbar.dart';
+import 'package:taskify/controllers/ui_controller.dart';
 
 class AuthController extends GetxController {
   static AuthController get to => Get.find();
@@ -30,12 +29,10 @@ class AuthController extends GetxController {
   }
 
   // sign out func
-  Future<void> signOut(BuildContext context) async {
+  Future<void> signOut() async {
     await _supabaseClient.auth.signOut();
     isLoggedIn.value = false;
-    if (context.mounted) {
-      CustomSnackBar(context).show('Signed out');
-    }
+    UIController.to.getSnackbar('Signed out', '', hideMessage: true);
 
     // Clear profile picture cache on signout
     AvatarController.to.clearPic();
