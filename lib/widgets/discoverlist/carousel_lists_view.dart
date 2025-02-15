@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:intl/intl.dart';
 import 'package:taskify/controllers/avatar_controller.dart';
 import 'package:taskify/controllers/list_creation_controller.dart';
 import 'package:taskify/controllers/lists_controller.dart';
@@ -119,12 +120,34 @@ class _CarouselListsViewState extends State<CarouselListsView> {
                                             .itemList?[pageIndex]['content'] ??
                                         '');
 
+                                String title = ListsController
+                                        .to
+                                        .publicPagingController
+                                        .itemList?[pageIndex]['title'] ??
+                                    '';
+
+                                String date = ListsController
+                                        .to
+                                        .publicPagingController
+                                        .itemList?[pageIndex]['updated_at'] ??
+                                    'aa';
+
+                                String email = ListsController
+                                        .to
+                                        .publicPagingController
+                                        .itemList?[pageIndex]['email']
+                                        ?.split('@')
+                                        .first ??
+                                    'No user';
+
                                 return InkWell(
                                   onTap: () => onListTap(
                                       context,
                                       ListsController.to.publicPagingController
                                               .itemList?[pageIndex] ??
                                           {}),
+                                  overlayColor: WidgetStateProperty.all(
+                                      Colors.transparent),
                                   child: Padding(
                                     padding: EdgeInsets.only(top: 0),
                                     child: SingleChildScrollView(
@@ -139,12 +162,7 @@ class _CarouselListsViewState extends State<CarouselListsView> {
                                             padding: EdgeInsets.only(
                                                 left: 22, right: 22, top: 14),
                                             child: Text(
-                                              ListsController
-                                                          .to
-                                                          .publicPagingController
-                                                          .itemList?[pageIndex]
-                                                      ['title'] ??
-                                                  '',
+                                              title,
                                               style: TextStyle(
                                                 color: Colors.black87,
                                                 fontSize: 22,
@@ -242,7 +260,7 @@ class _CarouselListsViewState extends State<CarouselListsView> {
                                                   constraints: BoxConstraints(
                                                       maxWidth: 110),
                                                   child: Text(
-                                                    '${ListsController.to.publicPagingController.itemList?[pageIndex]['email']?.split('@').first ?? 'No user'}',
+                                                    email,
                                                     maxLines: 1,
                                                     overflow:
                                                         TextOverflow.ellipsis,
@@ -260,15 +278,55 @@ class _CarouselListsViewState extends State<CarouselListsView> {
                                           // List Content
                                           Padding(
                                             padding: EdgeInsets.only(
-                                                left: 22,
-                                                right: 22,
-                                                bottom: 200),
+                                              left: 22,
+                                              right: 22,
+                                            ),
                                             child: Text(
                                               content,
                                               style: TextStyle(
+                                                color: Colors.grey[900],
                                                 fontSize: 14,
                                                 fontWeight: FontWeight.w400,
                                               ),
+                                            ),
+                                          ),
+
+                                          // List date
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                              left: 22,
+                                              right: 22,
+                                              bottom: 200,
+                                            ),
+                                            child: Row(
+                                              spacing: 8,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Icon(
+                                                  Icons.edit_note_rounded,
+                                                  size: 16,
+                                                  color: Colors.grey[700],
+                                                ),
+                                                SelectableText(
+                                                  ListsController.to.publicPagingController
+                                                                      .itemList?[
+                                                                  pageIndex]
+                                                              ['updated_at'] !=
+                                                          null
+                                                      ? DateFormat.yMd()
+                                                          .add_jm()
+                                                          .format(
+                                                            DateTime.parse(date)
+                                                                .toLocal(),
+                                                          )
+                                                      : 'Unknown',
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.grey[700],
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
                                         ],

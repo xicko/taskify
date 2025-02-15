@@ -91,6 +91,8 @@ class LoginPageState extends State<LoginPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      SizedBox(height: 40),
+
                       // inputs
                       Padding(
                         padding: EdgeInsets.only(bottom: 24),
