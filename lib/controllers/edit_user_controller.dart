@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:taskify/auth/auth_service.dart';
+import 'package:taskify/controllers/auth_controller.dart';
 import 'package:taskify/controllers/ui_controller.dart';
 
 class EditUserController extends GetxController {
@@ -10,6 +11,10 @@ class EditUserController extends GetxController {
   RxBool emailUpdateSent = false.obs;
   RxBool passwordUpdatedText = false.obs;
 
+  // For UI
+  RxBool isEmailChanged = false.obs;
+  RxBool isPasswordValid = false.obs;
+
   // Text input controllers
   final TextEditingController emailController = TextEditingController();
   final TextEditingController currentPasswordController =
@@ -17,6 +22,32 @@ class EditUserController extends GetxController {
   final TextEditingController newPasswordController = TextEditingController();
   final TextEditingController confirmNewPasswordController =
       TextEditingController();
+
+  // FocusNodes for password change inputs
+  final FocusNode currentPasswordFocusNode = FocusNode();
+  final FocusNode passwordFocusNode = FocusNode();
+  final FocusNode confirmPasswordFocusNode = FocusNode();
+
+  @override
+  void onInit() {
+    super.onInit();
+
+    void checkPasswordValidity() {
+      isPasswordValid.value = currentPasswordController.text.length > 7 &&
+          newPasswordController.text == confirmNewPasswordController.text &&
+          newPasswordController.text.length > 7 &&
+          confirmNewPasswordController.text.length > 7;
+    }
+
+    emailController.addListener(() {
+      isEmailChanged.value =
+          emailController.text != AuthController.to.userEmail.value;
+    });
+
+    currentPasswordController.addListener(() => checkPasswordValidity());
+    newPasswordController.addListener(() => checkPasswordValidity());
+    confirmNewPasswordController.addListener(() => checkPasswordValidity());
+  }
 
   Future<void> fillUserEmail() async {
     final user = AuthService().supabase.auth.currentSession?.user;

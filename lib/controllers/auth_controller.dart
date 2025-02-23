@@ -13,6 +13,9 @@ class AuthController extends GetxController {
   // flag to track if user is currently logged in
   RxBool isLoggedIn = false.obs;
 
+  RxString userId = ''.obs;
+  RxString userEmail = ''.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -22,9 +25,17 @@ class AuthController extends GetxController {
   Future<void> _initializeAuthState() async {
     final session = _supabaseClient.auth.currentSession;
     isLoggedIn.value = session != null;
+    if (session != null) {
+      userId.value = session.user.id;
+      userEmail.value = session.user.email ?? '';
+    }
 
     _supabaseClient.auth.onAuthStateChange.listen((event) {
       isLoggedIn.value = event.session != null;
+      if (event.session != null) {
+        userId.value = session?.user.id ?? '';
+        userEmail.value = session?.user.email ?? '';
+      }
     });
   }
 

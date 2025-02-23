@@ -133,6 +133,7 @@ class ListsController extends GetxController {
       if (response != null) {
         ListCreationController.to.isNewListModalVisible.value = false;
       }
+      debugPrint('singular list deleted');
     } catch (e) {
       debugPrint('$e');
     }
@@ -217,6 +218,7 @@ class ListsController extends GetxController {
           final nextPageKey = pageKey + pageSize;
           pagingController.appendPage(fetchedLists, nextPageKey);
         }
+        debugPrint('fetched search');
       } else {
         // Regular fetch
         final response = await Supabase.instance.client
@@ -238,6 +240,7 @@ class ListsController extends GetxController {
           final nextPageKey = pageKey + pageSize;
           pagingController.appendPage(fetchedLists, nextPageKey);
         }
+        debugPrint('fetched non-search');
       }
     } catch (e) {
       debugPrint('$e');
@@ -351,6 +354,7 @@ class ListsController extends GetxController {
           final nextPageKey = pageKey + pageSize;
           publicPagingController.appendPage(fetchedPublicLists, nextPageKey);
         }
+        debugPrint('fetched search');
       } else {
         // Regular fetch
         final response = await Supabase.instance.client
@@ -370,6 +374,7 @@ class ListsController extends GetxController {
           final nextPageKey = pageKey + pageSize;
           publicPagingController.appendPage(fetchedPublicLists, nextPageKey);
         }
+        debugPrint('fetched non-search');
       }
     } catch (e) {
       debugPrint('Error fetching public list: $e');

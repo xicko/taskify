@@ -60,34 +60,15 @@ class AvatarController extends GetxController {
     hasProfilePic.value = false;
   }
 
-  // Insert / add pfp
-  Future<void> addProfilePic() async {
+  // Insert / update pfp
+  Future<void> addUpdateProfilePic() async {
     final supabase = Supabase.instance.client;
 
-    await supabase.from('profile_pictures').insert({
+    await supabase.from('profile_pictures').upsert({
       'user_id': AuthService().getCurrentUserId(),
       'base64': newBase64.toString(),
     });
-  }
-
-  Future<void> changeProfilePic() async {
-    final supabase = Supabase.instance.client;
-
-    await supabase
-        .from('profile_pictures')
-        .delete()
-        .eq('user_id', AuthService().getCurrentUserId().toString());
-
-    await Future.delayed(Duration(milliseconds: 150));
-
-    await supabase.from('profile_pictures').insert({
-      'user_id': AuthService().getCurrentUserId(),
-      'base64': newBase64.toString(),
-    });
-
-    await Future.delayed(Duration(milliseconds: 50));
-
-    fetchProfilePic();
+    debugPrint('pfp added/updated');
   }
 
   // Delete pfp
@@ -129,22 +110,30 @@ class AvatarController extends GetxController {
   }
 
   // Method to request photo storage permission
-  void requestPhotoPermission() async {
+  void requestPhotoPermission(Function call) async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
 
     if (await Permission.photos.isGranted ||
         await Permission.storage.isGranted) {
       // If perm granted
-      pickImage();
+      call();
     } else {
       // If not granted yet, request permission
       if (androidInfo.version.sdkInt <= 32) {
         // Permission access for Android 12 and below
         await Permission.storage.request();
+        if (await Permission.photos.isGranted ||
+            await Permission.storage.isGranted) {
+          call();
+        }
       } else {
         // Permission access for Android 13 and above
         await Permission.photos.request();
+        if (await Permission.photos.isGranted ||
+            await Permission.storage.isGranted) {
+          call();
+        }
       }
     }
   }

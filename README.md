@@ -8,6 +8,8 @@ Taskify is a Flutter-based to-do list application with features for managing per
   <img src="https://dl.dashnyam.com/taskify_ss/3.webp" width="150" />
   <img src="https://dl.dashnyam.com/taskify_ss/4.webp" width="150" />
   <img src="https://dl.dashnyam.com/taskify_ss/5.webp" width="150" />
+  <img src="https://dl.dashnyam.com/taskify_ss/6.webp" width="150" />
+  <img src="https://dl.dashnyam.com/taskify_ss/7.webp" width="150" />
 </div>
 
 ## Features
@@ -15,6 +17,7 @@ Taskify is a Flutter-based to-do list application with features for managing per
 ### Core Features
 - **User Authentication**: Sign up, log in, and manage accounts with Supabase authentication.
 - **Private and Public Lists**: Create private lists by default with the option to make them public.
+- **Rich Text Formatting**: Supports rich text formatting for italic, bold, underline, strikethrough, text color, text highlights, etc.
 - **List Management**:
   - Create, edit, and delete lists.
   - Search functionality for lists.

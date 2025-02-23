@@ -9,11 +9,7 @@ class ProfilePictureEditDialog extends StatelessWidget {
 
   // Save Changes btn
   void _onSave(BuildContext context) async {
-    if (AvatarController.to.hasProfilePic.value) {
-      await AvatarController.to.changeProfilePic();
-    } else {
-      await AvatarController.to.addProfilePic();
-    }
+    await AvatarController.to.addUpdateProfilePic();
     await Future.delayed(Duration(milliseconds: 100));
     AvatarController.to.fetchProfilePic();
     if (context.mounted) {
@@ -118,7 +114,8 @@ class ProfilePictureEditDialog extends StatelessWidget {
 
               // Add/Change photo button
               ElevatedButton(
-                onPressed: () => AvatarController.to.requestPhotoPermission(),
+                onPressed: () => AvatarController.to.requestPhotoPermission(
+                    () => AvatarController.to.pickImage()),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black12,
                   foregroundColor:
