@@ -16,11 +16,6 @@ class MePage extends StatefulWidget {
 }
 
 class MePageState extends State<MePage> with AutomaticKeepAliveClientMixin {
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   // main widgets part
   @override
   Widget build(BuildContext context) {

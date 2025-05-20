@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:taskify/auth/auth_service.dart';
+import 'package:taskify/controllers/auth_controller.dart';
 import 'package:taskify/controllers/base_controller.dart';
 import 'package:taskify/controllers/lists_controller.dart';
 import 'package:taskify/controllers/ui_controller.dart';
@@ -15,15 +16,14 @@ class SignupPage extends StatefulWidget {
 
 class SignupPageState extends State<SignupPage> {
   // Text Controllers for signup inputs
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  final TextEditingController _emailController = AuthController.to.signupEmailController;
+  final TextEditingController _passwordController = AuthController.to.signupPasswordController;
+  final TextEditingController _confirmPasswordController = AuthController.to.signupConfirmPasswordController;
 
   // FocusNodes for signup inputs
-  final FocusNode _emailFocusNode = FocusNode();
-  final FocusNode _passwordFocusNode = FocusNode();
-  final FocusNode _confirmPasswordFocusNode = FocusNode();
+  final FocusNode _emailFocusNode = AuthController.to.signupEmailFocusNode;
+  final FocusNode _passwordFocusNode = AuthController.to.signupPasswordFocusNode;
+  final FocusNode _confirmPasswordFocusNode = AuthController.to.signupConfirmPasswordFocusNode;
 
   // For Sign Up Button
   void _signup() async {

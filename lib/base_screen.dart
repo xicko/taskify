@@ -2,6 +2,8 @@
 // in the BaseController, IndexedStack displays different screens
 // based on the index of currentIndex which is changed by BottomNavBar
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:taskify/controllers/list_creation_controller.dart';
@@ -40,7 +42,7 @@ class _BaseScreenState extends State<BaseScreen> {
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(0), // Empty height
             child: AppBar(
-              backgroundColor: Colors.black, // Affects the status bar color
+              backgroundColor: Platform.isIOS ? Colors.transparent : Colors.black, // Affects the status bar color
               elevation: 0,
             ),
           ),

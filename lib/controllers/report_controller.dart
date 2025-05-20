@@ -17,6 +17,7 @@ class ReportController extends GetxController {
   void onClose() {
     reasonController.dispose();
     reasonFocusNode.dispose();
+    
     super.onClose();
   }
 }
