@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:taskify/auth/auth_service.dart';
+import 'package:taskify/controllers/auth_controller.dart';
 import 'package:taskify/controllers/base_controller.dart';
 import 'package:taskify/controllers/lists_controller.dart';
 import 'package:taskify/controllers/ui_controller.dart';
@@ -15,12 +16,12 @@ class LoginPage extends StatefulWidget {
 
 class LoginPageState extends State<LoginPage> {
   // Text Controllers for login inputs
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = AuthController.to.loginEmailController;
+  final TextEditingController _passwordController = AuthController.to.loginPasswordController;
 
   // FocusNodes for login inputs
-  final FocusNode _emailFocusNode = FocusNode();
-  final FocusNode _passwordFocusNode = FocusNode();
+  final FocusNode _emailFocusNode = AuthController.to.loginEmailFocusNode;
+  final FocusNode _passwordFocusNode = AuthController.to.loginPasswordFocusNode;
 
   // For Login Button
   void _login() async {
