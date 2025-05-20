@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taskify/auth/auth_service.dart';
 import 'package:taskify/controllers/auth_controller.dart';
 import 'package:taskify/controllers/base_controller.dart';
@@ -23,8 +25,15 @@ class LoginPageState extends State<LoginPage> {
   final FocusNode _emailFocusNode = AuthController.to.loginEmailFocusNode;
   final FocusNode _passwordFocusNode = AuthController.to.loginPasswordFocusNode;
 
+  @override
+  void initState() {
+    super.initState();
+  }
+
   // For Login Button
   void _login() async {
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
 
@@ -35,6 +44,8 @@ class LoginPageState extends State<LoginPage> {
         if (response.session != null) {
           UIController.to
               .getSnackbar('Login successful!', '', hideMessage: true);
+
+          localStorage.setString('rememberEmail', email);
 
           // hiding login modal if login successful(state)
           UIController.to.loginVisibility.value = false;
@@ -97,154 +108,171 @@ class LoginPageState extends State<LoginPage> {
                       // inputs
                       Padding(
                         padding: EdgeInsets.only(bottom: 24),
-                        child: Column(
-                          children: [
-                            Text(
-                              'Log in',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 22,
-                                color: AppColors.bw100(
-                                    Theme.of(context).brightness),
+                        child: Obx(
+                          () => Column(
+                            children: [
+                              Text(
+                                'Log in',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 22,
+                                  color: AppColors.bw100(
+                                      Theme.of(context).brightness),
+                                ),
                               ),
-                            ),
-                            SizedBox(height: 8),
-                            TextField(
-                              maxLines: 1,
-                              maxLength: 40,
-                              textInputAction: TextInputAction.next,
-                              controller: _emailController,
-                              focusNode: _emailFocusNode,
-                              onSubmitted: (_) {
-                                FocusScope.of(context)
-                                    .requestFocus(_passwordFocusNode);
-                              },
-                              cursorColor: AppColors.textFieldCursorColor(
-                                  Theme.of(context).brightness),
-                              style: TextStyle(
-                                color: AppColors.bw100(
+                              SizedBox(height: 8),
+                              TextField(
+                                maxLines: 1,
+                                maxLength: 40,
+                                textInputAction: TextInputAction.next,
+                                controller: _emailController,
+                                focusNode: _emailFocusNode,
+                                onSubmitted: (_) {
+                                  FocusScope.of(context)
+                                      .requestFocus(_passwordFocusNode);
+                                },
+                                // onChanged: (value) => AuthController.to.onLoginInputChange(value),
+                                cursorColor: AppColors.textFieldCursorColor(
                                     Theme.of(context).brightness),
-                              ),
-                              decoration: InputDecoration(
-                                hintText: 'Email',
-                                counterText: '',
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: AppColors.textFieldBorderColor(
-                                        Theme.of(context).brightness),
-                                    width: 1,
+                                style: TextStyle(
+                                  color: AppColors.bw100(
+                                      Theme.of(context).brightness),
+                                ),
+                                decoration: InputDecoration(
+                                  hintText: 'Email',
+                                  counterText: '',
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: AppColors.textFieldBorderColor(
+                                          Theme.of(context).brightness),
+                                      width: 1,
+                                    ),
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color:
+                                            AppColors.textFieldFocusedBorderColor(
+                                                Theme.of(context).brightness),
+                                        width: 2),
                                   ),
                                 ),
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.allow(
+                                    RegExp(r'[a-zA-Z0-9@._+-]'),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 4),
+                              TextFormField(
+                                maxLines: 1,
+                                maxLength: 64,
+                                textInputAction: TextInputAction.done,
+                                controller: _passwordController,
+                                focusNode: _passwordFocusNode,
+                                obscureText: true,
+                                cursorColor: AppColors.textFieldCursorColor(
+                                    Theme.of(context).brightness),
+                                style: TextStyle(
+                                  color: AppColors.bw100(
+                                      Theme.of(context).brightness),
+                                ),
+                                decoration: InputDecoration(
+                                  hintText: 'Password',
+                                  counterText: '',
+                                  errorMaxLines: 2,
+                                  enabledBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
+                                      color: AppColors.textFieldBorderColor(
+                                          Theme.of(context).brightness),
+                                      width: 1,
+                                    ),
+                                  ),
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(
                                       color:
                                           AppColors.textFieldFocusedBorderColor(
                                               Theme.of(context).brightness),
-                                      width: 2),
-                                ),
-                              ),
-                              inputFormatters: [
-                                FilteringTextInputFormatter.allow(
-                                  RegExp(r'[a-zA-Z0-9@._+-]'),
-                                ),
-                              ],
-                            ),
-                            SizedBox(height: 4),
-                            TextFormField(
-                              maxLines: 1,
-                              maxLength: 64,
-                              textInputAction: TextInputAction.done,
-                              controller: _passwordController,
-                              focusNode: _passwordFocusNode,
-                              obscureText: true,
-                              cursorColor: AppColors.textFieldCursorColor(
-                                  Theme.of(context).brightness),
-                              style: TextStyle(
-                                color: AppColors.bw100(
-                                    Theme.of(context).brightness),
-                              ),
-                              decoration: InputDecoration(
-                                hintText: 'Password',
-                                counterText: '',
-                                errorMaxLines: 2,
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color: AppColors.textFieldBorderColor(
-                                        Theme.of(context).brightness),
-                                    width: 1,
+                                      width: 2,
+                                    ),
                                   ),
                                 ),
-                                focusedBorder: UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                    color:
-                                        AppColors.textFieldFocusedBorderColor(
-                                            Theme.of(context).brightness),
-                                    width: 2,
-                                  ),
-                                ),
+                                onFieldSubmitted: (_) {
+                                  if (_emailController.text.isNotEmpty ||
+                                      _passwordController.text.isNotEmpty) {
+                                    _login();
+                                  }
+                                },
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter a password';
+                                  }
+                                  if (value.length < 8) {
+                                    return 'Password must be at least 8 characters long';
+                                  }
+                                  return null;
+                                },
                               ),
-                              onFieldSubmitted: (_) {
-                                if (_emailController.text.isNotEmpty ||
-                                    _passwordController.text.isNotEmpty) {
-                                  _login();
-                                }
-                              },
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter a password';
-                                }
-                                if (value.length < 8) {
-                                  return 'Password must be at least 8 characters long';
-                                }
-                                return null;
-                              },
-                            ),
-                            SizedBox(height: 20),
-                            Column(
-                              spacing: 8,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'Don\'t have an account?',
-                                  style: TextStyle(
-                                    color: AppColors.bw100(
-                                        Theme.of(context).brightness),
-                                  ),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    // Unfocusing elements, mostly for text fields
-                                    FocusManager.instance.primaryFocus
-                                        ?.unfocus();
+                              SizedBox(height: 6),
 
-                                    // Switching auth screen
-                                    BaseController.to.switchAuthScreen(1);
-                                  },
-                                  style: ButtonStyle(
-                                    foregroundColor:
-                                        WidgetStateProperty.all(Colors.black),
-                                    padding: WidgetStateProperty.all(
-                                        EdgeInsets.zero),
-                                    overlayColor: WidgetStateProperty.all(
-                                        Colors.transparent),
-                                    tapTargetSize:
-                                        MaterialTapTargetSize.shrinkWrap,
-                                    minimumSize:
-                                        WidgetStateProperty.all(Size.zero),
+                              // remember me checkbox
+                              Row(
+                                children: [
+                                  Checkbox(
+                                      value: AuthController.to.rememberEmailChecked.value,
+                                      onChanged: (bool? value) => AuthController.to.handleRememberEmail(value),
                                   ),
-                                  child: Text(
-                                    'Sign up here',
+                                  Text('Remember email'),
+                                ],
+                              ),
+                              SizedBox(height: 6),
+
+                              // misc
+                              Column(
+                                spacing: 8,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Don\'t have an account?',
                                     style: TextStyle(
-                                      fontWeight: FontWeight.w600,
                                       color: AppColors.bw100(
                                           Theme.of(context).brightness),
                                     ),
                                   ),
-                                ),
-                              ],
-                            )
-                          ],
+                                  TextButton(
+                                    onPressed: () {
+                                      // Unfocusing elements, mostly for text fields
+                                      FocusManager.instance.primaryFocus
+                                          ?.unfocus();
+
+                                      // Switching auth screen
+                                      BaseController.to.switchAuthScreen(1);
+                                    },
+                                    style: ButtonStyle(
+                                      foregroundColor:
+                                          WidgetStateProperty.all(Colors.black),
+                                      padding: WidgetStateProperty.all(
+                                          EdgeInsets.zero),
+                                      overlayColor: WidgetStateProperty.all(
+                                          Colors.transparent),
+                                      tapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
+                                      minimumSize:
+                                          WidgetStateProperty.all(Size.zero),
+                                    ),
+                                    child: Text(
+                                      'Sign up here',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.bw100(
+                                            Theme.of(context).brightness),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
                         ),
                       ),
 

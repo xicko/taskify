@@ -33,6 +33,7 @@ class SignupFormState extends State<SignupForm> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    
     super.dispose();
   }
 

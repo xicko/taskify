@@ -12,9 +12,10 @@ class ListDetailController extends GetxController {
 
   @override
   void onClose() {
-    super.onClose();
     listDetailContentController.dispose();
     contentFocusNode.dispose();
+
+    super.onClose();
   }
 
   // Method to load the list, use at widget mount initState

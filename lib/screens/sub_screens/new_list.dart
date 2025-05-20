@@ -63,6 +63,7 @@ class NewListState extends State<NewList> {
 
     _titleFocusNode.dispose();
     _contentFocusNode.dispose();
+    
     super.dispose();
   }
 
