@@ -41,8 +41,9 @@ class _CreateSaveButtonState extends State<CreateSaveButton> {
     } else {
       if (ListCreationController.to.isEditMode.value == false) {
         // Creation
-        ListCreationController.to.createList(
-            title, content, ListCreationController.to.isPublic.value);
+        //ListCreationController.to.createList(title, content, ListCreationController.to.isPublic.value);
+
+        ListCreationController.to.insertDb();
       } else {
         // Editing
         ListCreationController.to.updateList(

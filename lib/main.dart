@@ -15,6 +15,7 @@ import 'package:taskify/controllers/lists_controller.dart';
 import 'package:taskify/controllers/list_creation_controller.dart';
 import 'package:taskify/controllers/report_controller.dart';
 import 'package:taskify/controllers/ui_controller.dart';
+import 'package:taskify/screens/sub_screens/no_connection.dart';
 import 'package:taskify/theme/theme.dart';
 import 'base_screen.dart';
 
@@ -72,8 +73,12 @@ class MainApp extends StatelessWidget {
       statusBarIconBrightness: Brightness.light,
     ));
     return GetMaterialApp(
-      home: AuthGate(
-        child: const BaseScreen(),
+      home: Obx(
+        () => AuthGate(
+          child: BaseController.to.hasNetwork.value
+              ? BaseScreen()
+              : NoConnection(),
+        ),
       ),
       theme: lightMode,
       darkTheme: darkMode,

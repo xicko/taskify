@@ -124,6 +124,7 @@ class LoginPageState extends State<LoginPage> {
                               TextField(
                                 maxLines: 1,
                                 maxLength: 40,
+                              keyboardType: TextInputType.emailAddress,
                                 textInputAction: TextInputAction.next,
                                 controller: _emailController,
                                 focusNode: _emailFocusNode,
@@ -320,5 +321,14 @@ class LoginPageState extends State<LoginPage> {
         )
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _emailFocusNode.dispose();
+    _passwordFocusNode.dispose();
+    super.dispose();
   }
 }

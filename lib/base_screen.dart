@@ -4,11 +4,15 @@
 
 import 'dart:io';
 
+import 'dart:io';
+import 'dart:async';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:taskify/controllers/list_creation_controller.dart';
 import 'package:taskify/controllers/lists_controller.dart';
 import 'package:taskify/controllers/ui_controller.dart';
+import 'package:taskify/db/database.dart';
 import 'package:taskify/navs/home_nav.dart';
 import 'package:taskify/navs/discover_nav.dart';
 import 'package:taskify/navs/me_nav.dart';
@@ -27,6 +31,11 @@ class BaseScreen extends StatefulWidget {
 }
 
 class _BaseScreenState extends State<BaseScreen> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;

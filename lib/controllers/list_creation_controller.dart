@@ -6,6 +6,7 @@ import 'package:taskify/auth/auth_service.dart';
 import 'package:taskify/controllers/auth_controller.dart';
 import 'package:taskify/controllers/base_controller.dart';
 import 'package:taskify/controllers/ui_controller.dart';
+import 'package:taskify/db/database.dart';
 
 class ListCreationController extends GetxController {
   static ListCreationController get to => Get.find();
@@ -26,9 +27,15 @@ class ListCreationController extends GetxController {
   RxnString? editContent = RxnString(); // Content of the list to be edited
   RxnBool? editIsPublic = RxnBool(); // Is the list public?
 
+  // temp storing lists in db
+  RxList fromDb = [].obs;
+
   @override
   void onInit() {
     super.onInit();
+
+    // Fetch from local db at startup
+    ehlul();
 
     // Reactive listener for editmode
     ever(editListId!, (_) {
@@ -134,9 +141,27 @@ class ListCreationController extends GetxController {
 
   @override
   void onClose() {
-    titleController.dispose();
-    fleatherContentController.dispose();
+    // titleController.dispose();
+    // fleatherContentController.dispose();
 
     super.onClose();
+  }
+
+  // Inserting to db
+  final database = AppDatabase();
+  Future<void> insertDb() async {
+    await database.into(database.listItems).insert(ListItemsCompanion.insert(
+          userId: AuthController.to.userId.value,
+          title: titleController.text,
+          content: fleatherContentController.plainTextEditingValue.text,
+          email: AuthController.to.userEmail.value,
+        ));
+  }
+
+  // Fetch from local db
+  void ehlul() async {
+    List allItems = await database.select(database.listItems).get();
+
+    fromDb.assignAll(allItems);
   }
 }

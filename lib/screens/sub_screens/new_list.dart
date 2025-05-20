@@ -56,8 +56,8 @@ class NewListState extends State<NewList> {
 
   @override
   void dispose() {
-    titleController.dispose();
-    contentController.dispose();
+    // titleController.dispose();
+    // contentController.dispose();
 
     characterCount.dispose();
 

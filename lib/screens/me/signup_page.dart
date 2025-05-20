@@ -96,7 +96,7 @@ class SignupPageState extends State<SignupPage> {
                     children: [
                       SizedBox(height: 40),
 
-                      // inputs
+                      // Inputs
                       Padding(
                         padding: EdgeInsets.only(bottom: 24),
                         child: Column(
@@ -116,6 +116,7 @@ class SignupPageState extends State<SignupPage> {
                               maxLength: 40,
                               controller: _emailController,
                               focusNode: _emailFocusNode,
+                              keyboardType: TextInputType.emailAddress,
                               textInputAction: TextInputAction.next,
                               onSubmitted: (_) {
                                 FocusScope.of(context)
