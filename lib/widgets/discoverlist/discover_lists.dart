@@ -29,28 +29,10 @@ class DiscoverLists extends StatelessWidget {
     FocusManager.instance.primaryFocus?.unfocus();
 
     // Open page
-    Navigator.push(
+    UIController.to.openScreen(
       context,
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) {
-          return ListDetailsPage(list: item);
-        },
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          // Animation beginning and ending curve
-          const begin = Offset(0, 1);
-          const end = Offset.zero;
-          const curve = Curves.easeInOutQuad;
-
-          var tween =
-              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-          var offsetAnimation = animation.drive(tween);
-
-          return SlideTransition(
-            position: offsetAnimation,
-            child: child,
-          );
-        },
-      ),
+      ListDetailsPage(list: item),
+      direction: OpenScreenType.fromBottom,
     );
   }
 

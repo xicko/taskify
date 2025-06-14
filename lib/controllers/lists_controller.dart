@@ -10,6 +10,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:taskify/auth/auth_service.dart';
 import 'package:taskify/controllers/list_creation_controller.dart';
 import 'package:taskify/controllers/list_selection_controller.dart';
+import 'package:taskify/controllers/network_controller.dart';
 import 'package:taskify/controllers/ui_controller.dart';
 
 class ListsController extends GetxController {

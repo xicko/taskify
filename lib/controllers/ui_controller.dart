@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+enum OpenScreenType {
+  fromTop,
+  fromBottom,
+  fromLeft,
+  fromRight,
+}
+
 class UIController extends GetxController {
   static UIController get to => Get.find();
 
@@ -65,6 +72,48 @@ class UIController extends GetxController {
 
       forwardAnimationCurve: forward,
       reverseAnimationCurve: reverse,
+    );
+  }
+
+  void openScreen(
+    BuildContext context,
+    Widget child, {
+    required OpenScreenType direction,
+  }) {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          Offset begin;
+          const end = Offset(0, 0);
+
+          if (direction == OpenScreenType.fromBottom) {
+            begin = Offset(0, 1);
+          } else if (direction == OpenScreenType.fromTop) {
+            begin = Offset(0, -1);
+          } else if (direction == OpenScreenType.fromLeft) {
+            begin = Offset(-1, 0);
+          } else if (direction == OpenScreenType.fromRight) {
+            begin = Offset(1, 0);
+          } else {
+            begin = Offset(0, 1);
+          }
+
+          const curve = Curves.easeInOut;
+
+          var tween =
+              Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          var offsetAnimation = animation.drive(tween);
+
+          return SlideTransition(
+            position: offsetAnimation,
+            child: child,
+          );
+        },
+        pageBuilder: (context, secondaryAnimation, animation) {
+          return child;
+        },
+      ),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -30,7 +31,9 @@ void main() {
 
       FlutterError.onError = (FlutterErrorDetails details) {
         // Log the error for debugging (e.g., to a remote logging service)
+        // if (!kReleaseMode) {
         debugPrint('Flutter Error: ${details.exceptionAsString()}');
+        // }
       };
 
       // State Controllers
